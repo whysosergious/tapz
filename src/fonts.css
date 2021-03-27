@@ -1,0 +1,24 @@
+@font-face {
+	font-family: 'Ost-Sans';
+	src: url('ass/fonts/Ost-Regular.otf') format('opentype');
+	font-weight: 400;
+	font-display: block;
+}
+@font-face {
+	font-family: 'Ost-Sans';
+	src: url('ass/fonts/Ost-Bold.otf') format('opentype');
+	font-weight: 600;
+	font-display: block;
+}
+@font-face {
+	font-family: 'Montserrat';
+	src: url('ass/fonts/Montserrat-Regular.ttf') format('truetype');
+	font-weight: 400;
+	font-display: block;
+}
+@font-face {
+	font-family: 'Montserrat';
+	src: url('ass/fonts/Montserrat-Bold.ttf') format('truetype');
+	font-weight: 600;
+	font-display: block;
+}

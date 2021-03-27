@@ -1,0 +1,66 @@
+.Column {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  flex-grow: 0;
+  flex-shrink: 0;
+  /* background-color: rgb(227, 238, 234); */
+}
+
+.Column-Title {
+  padding-left: .6rem;
+  margin-bottom: .3rem;
+  border-bottom: .1rem solid rgb(202, 181, 181);
+}
+
+.Column .Container {
+  flex-direction: column;
+}
+/* .Column.Cask {
+  top: 3rem;
+} */
+.Bench {
+  grid-column: 2;
+}
+
+
+.Entry-Slot {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  height: 2.2rem;
+  width: 100%;
+  background-color: rgb(255, 245, 232);
+  
+}
+.rows .Entry-Slot:not(:first-child, .first-in-group) {
+  border-top: .04rem solid rgb(230, 213, 213);
+}
+.Group .columns:not(:first-child) .Container {
+  border-left: .04rem solid rgb(230, 213, 213);
+}
+
+.Cask .Entry-Slot {
+  height: 2.8rem;
+}
+.Entry-Slot.hero {
+  background-color: rgb(255, 236, 213);
+}
+.Entry-Slot.large {
+  height: 8.8rem;
+}
+.Entry-Slot.first-in-group {
+  margin-top: 1.4rem;
+}
+.Row-Title {
+  font-size: 1.1rem;
+  line-height: 2.2rem;
+  min-width: 1rem;
+  text-align: right;
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -1.6rem;
+  margin: auto 0;
+}
+
+

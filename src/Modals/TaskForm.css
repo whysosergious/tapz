@@ -1,0 +1,52 @@
+.Task-Form-Container {
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.479);
+  z-index: 10;
+}
+
+.Task-Form {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  text-align: left;
+  top: 1rem;
+  right: 0;
+  bottom: 2rem;
+  left: 0;
+  padding: 2rem 1rem;
+  margin: auto;
+  height: fit-content;
+  max-height: 95vh;
+  max-width: 60vw;
+  background-color: rgb(227, 238, 234);
+  border-radius: 0.3rem;
+  overflow-y: auto;
+}
+
+input,
+textarea {
+  min-width: 100%;
+  max-width: 100%;
+  padding: 0.3rem;
+  margin-bottom: 0.7rem;
+}
+textarea {
+  min-height: 4rem;
+  height: 7rem;
+}
+
+.Buttons-Wrapper {
+  display: flex;
+  position: relative;
+  margin-top: 4rem;
+}
+.Buttons-Wrapper :first-child {
+  margin-left: auto;
+}

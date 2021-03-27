@@ -1,0 +1,37 @@
+section {
+  display: grid;
+  flex-direction: column;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: fit-content auto;
+  padding: 4rem;
+
+}
+
+.Group, .Container {
+  display: flex;
+  position: relative;
+  justify-content: center;
+}
+
+.Group.Keg {
+  grid-row: 1 / span 10;
+}
+
+
+/* .Group {
+  grid-column: 1;
+} */
+
+/* .Group.Keg {
+  order: 1;
+}
+.Group.Cask {
+  order: 3;
+}
+.Group.Keg-Bench {
+  order: 2;
+}
+.Group.Cask-Bench {
+  order: 4;
+} */

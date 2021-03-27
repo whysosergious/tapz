@@ -1,0 +1,50 @@
+.Drop-Box {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 8.5rem;
+  width: 9rem;
+  padding: .2rem;
+  margin: 1rem auto;
+  border-radius: 2rem;
+  border: .17rem dashed rgb(200, 232, 236);
+  background-color: rgb(172, 255, 227);
+  cursor: pointer;
+  user-select: none;
+}
+.Drop-Box:hover {
+  background-color: white;
+}
+.Drop-Box.highlight {
+  border: .17rem dashed rgb(139, 211, 219);
+  background-color: rgb(144, 247, 212);
+}
+.Drop-Box.expand {
+  background-color: white;
+}
+.Drop-Box input[type=file] {
+  visibility: hidden;
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+.Drop-Box img {
+  height: 3.6rem;
+  opacity: .25;
+}
+.Drop-Box h2 {
+  font-size: .75rem;
+  max-width: 8.2rem;
+  height: 2.2rem;
+  font-weight: 600;
+  color: #5b6474;
+  text-transform: none;
+}
+
+.Preview-Image {
+  display: none;
+}
