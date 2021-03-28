@@ -1,18 +1,44 @@
-.Task-Card {
+.Card {
+  --margin: .2rem;
+
   display: flex;
+  flex-basis: 100%;
   position: relative;
   flex-direction: column;
-  margin: 0.4rem;
-  padding: 1rem 0.7rem;
-  min-height: 4rem;
+  padding: 0 0.6rem 0 .4rem;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+  max-height: 2.9rem;
+  max-width: fit-content;
+  
+  min-width: 0;
   background-color: rgb(128, 101, 101);
   border-radius: 0.3rem;
 }
-.Task-Card:hover {
+.rows .Entry-Slot:not(.hero) .Card:not(:first-child), .Bench .Card {
+  margin-left: .2rem; 
+}
+.columns .Entry-Slot:not(.hero) .Card:not(:first-child), .Bench .Card {
+  margin-top: .2rem;
+}
+.hero .Card, 
+.columns:not(.Bench) .Card {
+  max-width: unset;
+}
+.Card:hover {
   background-color: rgb(131, 65, 65);
 }
+.Bench .Card {
+  flex-basis: calc(7rem);
+  flex-grow: 1;
+  height: 2rem;
+}
 
-.Task-Card img {
-  margin-top: 0.4rem;
-  border-radius: 0.3rem;
+.Card h4 {
+  color: white;
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
 }

@@ -30,11 +30,27 @@ const Board = () => {
       </div>
 
       <div className="Group Cask-Bench">
-        <Column title="Cask Bench" type="Bench" widthMod={ 3 } />
+        <Column title="Cask Bench" 
+          type="Bench"
+          direction="rows"
+          widthMod={ 3 } 
+        />
       </div>
 
       <div className="Group Keg-Bench">
-        <Column title="Keg Bench" type="Bench" widthMod={ 3 } />
+        <Column title="Keg Bench"
+          type="Bench"
+          direction="rows"
+          widthMod={ 3 }
+        />
+      </div>
+
+      <div className="Group Recent">
+        <Column title="Recent"
+          type="Bench"
+          direction="rows"
+          widthMod={ 3 }
+        />
       </div>
     </section>
   );

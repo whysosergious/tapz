@@ -1,39 +1,36 @@
 /**
  * Dragging logic
  */
-import { _gc } from "logic/gc";
+import { _gc, _tapz } from "logic/gc";
 
 let dragY,
   dragX = 0;
-let hero, heroIndex, heroColumn, targetIndex, targetColumn, columns;
+let hero, heroId, heroIndex, heroColumn, heroSlot, parent;
 export const startDrag = (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
   dragY = event.screenY;
   dragX = event.screenX;
 
   hero = event.currentTarget;
+  heroId = event.target.dataset.id;
   heroColumn = hero.dataset.column;
-  let heroKey = hero.dataset.key;
-  columns || (columns = hero.parentElement.parentElement.children);
-  hero.style.zIndex = "10";
-  hero.style.pointerEvents = "none";
+  heroSlot = hero.dataset.slot;
 
-  _gc[heroColumn].cards.forEach((c, i) => {
-    if (c.stamp === heroKey) {
+  _tapz[heroColumn].slots[heroSlot].forEach((e,i) => {
+    if ( e.id.toString() === heroId ) {
       heroIndex = i;
     }
   });
 
-  Object.values(columns).forEach((column) => {
-    column.style.userSelect = "none";
-    Object.values(column.children).forEach((card) => {
-      if (card) {
-        card.addEventListener("mouseover", dragOver);
-        card.addEventListener("mouseout", cancelDrop);
-      }
-    });
-  });
+  parent = hero.parentElement;
+  hero.style.zIndex = '10';
+  hero.style.pointerEvents = 'none';
+  parent.style.userselect = 'none';
+
   window.addEventListener("mousemove", dragElement);
-  window.addEventListener("mouseup", drop);
+  window.addEventListener("mouseup", drop, { once: true });
 };
 
 let dragEntryOffsetY, dragEntryOffsetX;
@@ -45,51 +42,55 @@ const dragElement = (event) => {
   }
 };
 
-const dragOver = (event) => {
-  targetColumn = event.currentTarget.dataset.column;
-
-  let targetCard = event.currentTarget.dataset.key;
-
-  targetIndex = targetCard === "last" ? _gc[targetColumn].cards.length : 0;
-
-  _gc[targetColumn].cards.forEach((card, i) => {
-    if (card.stamp === targetCard) {
-      targetIndex = i;
-      targetColumn = card.column;
-      // console.log( targetColumn, targetIndex );
-    }
-  });
-};
-
-const cancelDrop = () => {
-  targetColumn = targetIndex = null;
-};
-
-const drop = () => {
-  if (targetColumn && targetIndex !== null) {
-    let heroComp = _gc[heroColumn].cards.splice(heroIndex, 1)[0];
-
-    heroComp.column = targetColumn;
-    if (_gc[targetColumn].cards.length > 0) {
-      _gc[targetColumn].cards.splice(targetIndex, 0, heroComp);
-    } else {
-      _gc[targetColumn].cards.push(heroComp);
-    }
-    _gc[heroColumn].dispatch();
-    _gc[targetColumn].dispatch();
-  }
-
-  hero.removeAttribute("style");
-  Object.values(columns).forEach((column) => {
-    column.removeAttribute("style");
-    Object.values(column.children).forEach((card) => {
-      if (card) {
-        card.removeEventListener("mouseover", dragOver);
-        card.removeEventListener("mouseout", cancelDrop);
+const drop = event => {
+  event.preventDefault();
+  event.stopPropagation();
+  // console.log(event.target.dataset.column, event.target.dataset.slot, event.target.dataset.id);
+  let targetId = event.target.dataset.id;
+  let targetColumn = event.target.dataset.column;
+  let targetSlot = event.target.dataset.slot;
+  let willBeHero = event.target.dataset.hero;
+  let targetIndex = null;
+  
+  if ( targetColumn && targetSlot ) {
+    targetId && _tapz[targetColumn].slots[targetSlot].forEach((e,i) => {
+      if ( e.id.toString() === targetId ) {
+        targetIndex = i;
       }
     });
-  });
-  window.removeEventListener("mousemove", dragElement);
-  window.removeEventListener("mouseup", drop);
-  targetColumn = targetIndex = null;
+
+    if ( heroColumn === targetColumn && heroSlot === targetSlot && targetIndex === undefined ) {
+      reset();
+      return;
+    }
+    _tapz[targetColumn].slots[targetSlot] = _tapz[targetColumn].slots[targetSlot] || [];
+    let heroData = _tapz[heroColumn].slots[heroSlot].splice(heroIndex, 1)[0];
+    heroData.column = targetColumn;
+    heroData.slot = targetSlot;
+    heroData.hero = willBeHero;
+
+    if ( willBeHero === 'true' && targetIndex !== null ) {
+      let targetData = _tapz[targetColumn].slots[targetSlot].splice(targetIndex, 1)[0];
+      targetData.column = 'Recent';
+      targetData.slot = 1;
+      targetData.hero = false;
+      _tapz.Recent.slots[1].push(targetData);
+    }
+    
+
+    targetIndex === null ? _tapz[targetColumn].slots[targetSlot].push(heroData)
+      : _tapz[targetColumn].slots[targetSlot].splice(targetIndex, 0, heroData);
+
+    _gc[targetColumn].dispatch();
+    _gc[heroColumn].dispatch();
+    _gc.Recent.dispatch();  
+  }
+  
+  reset();
 };
+
+const reset = () => {
+  hero.removeAttribute("style");
+  parent.removeAttribute("style");
+  window.removeEventListener("mousemove", dragElement);
+}

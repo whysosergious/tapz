@@ -9,7 +9,7 @@ import { useCustomHook, _gc, _tapz } from "logic/gc";
 
 // components
 import Card from "Entry/Card";
-import TaskForm from "Modals/TaskForm";
+import CardForm from "Modals/CardForm";
 
 
 
@@ -17,9 +17,8 @@ import TaskForm from "Modals/TaskForm";
 
 let modals = [];
 let count = 0;
-const Column = ({ ego='', title, type, slotType, direction='columns', widthMod=1, hero=false }) => {
-  let column = title.replace(" ", "");
-
+const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) => {
+  let column = title.replace(/\s+/g, "");
   const [ , setState] = useCustomHook([], column);
 
   const handleCloseModal = () => {
@@ -30,7 +29,7 @@ const Column = ({ ego='', title, type, slotType, direction='columns', widthMod=1
     let stamp = Date.now() + count++;
 
     modals = [
-      <TaskForm
+      <CardForm
         key={`modal${stamp}`}
         column={column}
         stamp={`${stamp}`}
@@ -39,15 +38,15 @@ const Column = ({ ego='', title, type, slotType, direction='columns', widthMod=1
     ];
     renderComponent();
   };
-  const handleViewCard = (title, desc, i, image) => {
+  const handleViewCard = (id, desc, brewery) => {
+    let stamp = Date.now() + count++;
     modals = [
-      <TaskForm
-        key={`modal${Date.now()}`}
-        index={i}
-        column={column}
-        title={title}
-        image={image}
+      <CardForm
+        key={`modal${stamp}`}
+        id={id}
         desc={desc}
+        column={column}
+        brewery={brewery}
         close={handleCloseModal}
       />,
     ];
@@ -62,6 +61,27 @@ const Column = ({ ego='', title, type, slotType, direction='columns', widthMod=1
     _gc[column].dispatch = renderComponent;
   }, []);
 
+
+  const createCards = ( entries ) => {
+    // console.log(_tapz[column], entries)
+    let cards = [];
+    entries?.forEach(e => {
+      let card = <Card
+      key={ e.id }
+        id={ e.id }
+        slot={ e.slot }
+        desc={ e.desc }
+        brewery={ e.brewery }
+        column={ column }
+        hero={ e.hero }
+        clicked={ handleViewCard }
+      />;
+      slotType === 'hero' ? cards = [card] : cards.push(card);      
+    });
+    return cards[0] ? cards : undefined ;
+  }
+
+  
   let slots = [];
   if ( type === 'Keg' ) {
 
@@ -69,13 +89,17 @@ const Column = ({ ego='', title, type, slotType, direction='columns', widthMod=1
       if ( _tapz.options['Keg-groups'].repeat > 0 ) {
         var firstInGroup = _tapz.options['Keg-groups'].repeat === i-1 ? 'first-in-group' : '';
       }
+
       slots.push(
         <div key={ `Keg${ Date.now() + i }` }
-          className={ `Entry-Slot ${ type } ${ slotType || '' } ${ firstInGroup }` }
+          className={ `Entry-Slot ${ type } ${ slotType } ${ firstInGroup }` }
           data-column={ column }
-          data-index={ i }
+          data-slot={ i }
+          data-hero={ slotType === 'hero' }
         >
           { slotType === 'hero' ? <h1 className="Row-Title">{ i }</h1> : undefined }
+          
+          { createCards(_tapz[column].slots[i]) }
         </div> 
       );
     }
@@ -84,44 +108,48 @@ const Column = ({ ego='', title, type, slotType, direction='columns', widthMod=1
       <div key={ `Cask${ Date.now() + 1 }` }
         className={ `Entry-Slot ${ type } hero` }
         data-column={ column }
-        data-index={ 1 }
-      ></div>,
+        data-slot={ 1 }
+        data-hero={ true }
+      >
+        { createCards(_tapz[column].slots[1]) }
+      </div>,
       <div key={ `Cask${ Date.now() + 2 }` }
         className={ `Entry-Slot large ${ type }` }
         data-column={ column }
-        data-index={ 2 }
-      ></div>
+        data-slot={ 2 }
+        data-hero={ false }
+      >
+        { createCards(_tapz[column].slots[2]) }
+      </div>
     ];
+  } else {
+    slots = [
+      <div key={ `Bench${ Date.now() }` }
+        className={ `Entry-Slot ${ type }` }
+        data-column={ column }
+        data-slot={ 1 }
+        data-hero={ false }
+      >
+        { createCards(_tapz[column].slots[1]) || <h4 className="Idle-Message" >This bench is empty</h4> }
+      </div>
+    ]
   }
 
   
 
-  let cards = _gc[column].cards.map((card, i) => {
-    const { stamp, title, image, desc, column } = card;
-    return (
-      <Card
-        key={stamp}
-        index={i}
-        title={title || "Untitled"}
-        desc={desc || "No description"}
-        image={image}
-        column={column}
-        compkey={stamp}
-        clicked={handleViewCard}
-      />
-    );
-  });
+
 
   return (      
     <div className={ `Column ${ type } ${ direction }` }
       style={{ width: `${ 14 * widthMod }vw` }}
-      data-column={column} 
+      data-column={column}
       data-key={column}
-      >
+    >
       <h1 className="Column-Title">{title}</h1>
       <div className="Container">
         { slots }
       </div>
+      { modals }
     </div>
   );
 };

@@ -1,8 +1,8 @@
 /**
- * Task Form for new and existing cards
+ * Card Form for new and existing cards
  */
 import React from "react";
-import "./TaskForm.css";
+import "./CardForm.css";
 
 // components
 import Button from "shared/Button";
@@ -27,7 +27,7 @@ _gc.taskForm = {
   image: "none",
 };
 
-const TaskForm = ({
+const CardForm = ({
   index,
   title = "",
   desc = "",
@@ -77,7 +77,7 @@ const TaskForm = ({
           onChange={handleDescChange}
           defaultValue={formDesc}
         ></textarea>
-        <DropBox image={image} />
+        {/* <DropBox image={image} /> */}
         <div className="Buttons-Wrapper">
           <Button text="Save" clicked={handleSave} />
           <Button text="Cancel" clicked={handleCancel} />
@@ -87,4 +87,4 @@ const TaskForm = ({
   );
 };
 
-export default TaskForm;
+export default CardForm;

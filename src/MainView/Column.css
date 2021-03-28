@@ -2,8 +2,8 @@
   display: flex;
   position: relative;
   flex-direction: column;
-  flex-grow: 0;
-  flex-shrink: 0;
+  /* flex-grow: 0; */
+  /* flex-shrink: 0; */
   /* background-color: rgb(227, 238, 234); */
 }
 
@@ -27,11 +27,17 @@
 .Entry-Slot {
   display: flex;
   position: relative;
-  flex-direction: column;
-  height: 2.2rem;
+  height: 2.4rem;
   width: 100%;
-  background-color: rgb(255, 245, 232);
+  padding: .2rem;
+  background-color: #e8fff8;
   
+}
+.Bench .Entry-Slot {
+  padding: 0 .2rem .2rem 0;
+}
+.columns .Entry-Slot {
+  flex-direction: column;
 }
 .rows .Entry-Slot:not(:first-child, .first-in-group) {
   border-top: .04rem solid rgb(230, 213, 213);
@@ -41,17 +47,30 @@
 }
 
 .Cask .Entry-Slot {
-  height: 2.8rem;
+  height: 3.3rem;
 }
 .Entry-Slot.hero {
-  background-color: rgb(255, 236, 213);
+  background-color: #bfc4d2;
 }
 .Entry-Slot.large {
   height: 8.8rem;
 }
 .Entry-Slot.first-in-group {
-  margin-top: 1.4rem;
+  margin-top: 1rem;
 }
+
+.Bench .Entry-Slot {
+  flex-wrap: wrap;
+  height: fit-content;
+  padding: .2rem .2rem .4rem .2rem;       /* This should not be needed, check the idle meassage */
+}
+.Idle-Message {
+  padding: .2rem 0 0 .6rem;
+  line-height: 2rem;
+  color: #07c6a2;
+  pointer-events: none;
+}
+
 .Row-Title {
   font-size: 1.1rem;
   line-height: 2.2rem;

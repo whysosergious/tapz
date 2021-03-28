@@ -50,3 +50,6 @@ textarea {
 .Buttons-Wrapper :first-child {
   margin-left: auto;
 }
+button {
+  cursor: default;
+}

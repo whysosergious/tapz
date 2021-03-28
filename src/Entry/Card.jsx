@@ -6,8 +6,9 @@ import "./Card.css";
 
 // logic
 import { startDrag } from "logic/drag";
+import { _tapz } from "logic/gc";
 
-const Card = ({ index, title, image, desc, column, compkey, clicked }) => {
+const Card = ({ id, slot, desc, brewery, column, hero, clicked }) => {
   let origY,
     origX = 0;
 
@@ -21,7 +22,7 @@ const Card = ({ index, title, image, desc, column, compkey, clicked }) => {
     let offsetY = event.screenY - origY;
     let offsetX = event.screenX - origX;
     if (offsetY <= 10 && offsetY >= -10 && offsetX <= 10 && offsetX >= -10) {
-      clicked(title, desc, index, image);
+      clicked(id, desc, brewery);
     }
     window.removeEventListener("mouseup", handleRelease);
   };
@@ -29,13 +30,14 @@ const Card = ({ index, title, image, desc, column, compkey, clicked }) => {
   return (
     <>
       <div
-        className="Task-Card"
+        className="Card"
+        data-id={id}
         data-column={column}
-        data-key={compkey}
+        data-slot={slot}
+        data-hero={hero}
         onMouseDown={handlePress}
       >
-        <h4>{title}</h4>
-        {image !== "none" && <img src={image} alt="Preview" />}
+        <h4>{desc}</h4>
       </div>
     </>
   );
