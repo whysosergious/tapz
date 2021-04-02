@@ -5,20 +5,24 @@ import React, { useEffect } from "react";
 import "./Column.css";
 
 // logic
-import { useCustomHook, _gc, _tapz } from "logic/gc";
+import { useCustomHook, _gc, _tapz, _store, writeData } from "logic/gc";
 
 // components
 import Card from "Entry/Card";
 import CardForm from "Modals/CardForm";
 
 
-
-
+const structureData = (column, key, entry={}) => {
+  _tapz[column] = {
+    [key]: entry
+  };
+}
 
 let modals = [];
 let count = 0;
-const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) => {
-  let column = title.replace(/\s+/g, "");
+const Column = ({ title, type, slotType='', direction='columns', widthMod=1, addable=false }) => {
+  let column = title.replace(/[\s+]/g, "");
+  _tapz[column] || structureData(`${ column }`, 'slots');
   const [ , setState] = useCustomHook([], column);
 
   const handleCloseModal = () => {
@@ -32,20 +36,18 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) =
       <CardForm
         key={`modal${stamp}`}
         column={column}
-        stamp={`${stamp}`}
         close={handleCloseModal}
       />,
     ];
     renderComponent();
   };
-  const handleViewCard = (id, desc, brewery) => {
+  const handleViewCard = (storeId, desc, brewery) => {
     let stamp = Date.now() + count++;
     modals = [
       <CardForm
         key={`modal${stamp}`}
-        id={id}
+        storeId={storeId}
         desc={desc}
-        column={column}
         brewery={brewery}
         close={handleCloseModal}
       />,
@@ -63,17 +65,13 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) =
 
 
   const createCards = ( entries ) => {
-    // console.log(_tapz[column], entries)
     let cards = [];
     entries?.forEach(e => {
-      let card = <Card
-      key={ e.id }
-        id={ e.id }
-        slot={ e.slot }
-        desc={ e.desc }
-        brewery={ e.brewery }
-        column={ column }
-        hero={ e.hero }
+      let storeCard = _store.cards.find(card => card.storeId === e.storeId);
+      let card = <Card key={ e.id }
+        data={ e }
+        desc={ storeCard.desc }
+        brewery={ storeCard.brewery }
         clicked={ handleViewCard }
       />;
       slotType === 'hero' ? cards = [card] : cards.push(card);      
@@ -81,17 +79,17 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) =
     return cards[0] ? cards : undefined ;
   }
 
-  
   let slots = [];
   if ( type === 'Keg' ) {
 
-    for ( let i=1; i<=_tapz.options['Keg-rows']; i++) {
-      if ( _tapz.options['Keg-groups'].repeat > 0 ) {
-        var firstInGroup = _tapz.options['Keg-groups'].repeat === i-1 ? 'first-in-group' : '';
+    for ( let i=1; i<=_gc.options.tapz['Keg-rows']; i++) {
+      _tapz[column].slots[i] || ( _tapz[column].slots[i] = [] );
+      if ( _gc.options.tapz['Keg-groups'].repeat > 0 ) {
+        var firstInGroup = _gc.options.tapz['Keg-groups'].repeat === i-1 ? 'first-in-group' : '';
       }
 
       slots.push(
-        <div key={ `Keg${ Date.now() + i }` }
+        <div key={ `${ type }${ Date.now() + i }` }
           className={ `Entry-Slot ${ type } ${ slotType } ${ firstInGroup }` }
           data-column={ column }
           data-slot={ i }
@@ -104,8 +102,10 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) =
       );
     }
   } else if ( type === 'Cask' ) {
+    _tapz[column].slots[1] || ( _tapz[column].slots[1] = [] );
+    _tapz[column].slots[2] || ( _tapz[column].slots[2] = [] );
     slots = [
-      <div key={ `Cask${ Date.now() + 1 }` }
+      <div key={ `${ type }${ Date.now() + 1 }` }
         className={ `Entry-Slot ${ type } hero` }
         data-column={ column }
         data-slot={ 1 }
@@ -113,7 +113,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) =
       >
         { createCards(_tapz[column].slots[1]) }
       </div>,
-      <div key={ `Cask${ Date.now() + 2 }` }
+      <div key={ `${ type }${ Date.now() + 2 }` }
         className={ `Entry-Slot large ${ type }` }
         data-column={ column }
         data-slot={ 2 }
@@ -123,8 +123,9 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) =
       </div>
     ];
   } else {
+    _tapz[column].slots[1] || ( _tapz[column].slots[1] = [] );
     slots = [
-      <div key={ `Bench${ Date.now() }` }
+      <div key={ `${ type }${ Date.now() }` }
         className={ `Entry-Slot ${ type }` }
         data-column={ column }
         data-slot={ 1 }
@@ -133,11 +134,10 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) =
         { createCards(_tapz[column].slots[1]) || <h4 className="Idle-Message" >This bench is empty</h4> }
       </div>
     ]
-  }
+  }  
 
-  
-
-
+  // save on every rerender ( user action )
+  writeData(_tapz);
 
   return (      
     <div className={ `Column ${ type } ${ direction }` }
@@ -145,7 +145,11 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1 }) =
       data-column={column}
       data-key={column}
     >
-      <h1 className="Column-Title">{title}</h1>
+      <div className="Column-Heading-Group">
+        <h1 className="Column-Title">{title}</h1>
+        { addable && <h1 className="Text-Button" onClick={ handleAddCard }>Add+</h1> }
+      </div>
+      
       <div className="Container">
         { slots }
       </div>

@@ -2,125 +2,87 @@ import { useState } from "react";
 
 // global controller
 export const _gc = {
-};
-
-// tapz specific controller
-export const _tapz = {
-  num: 8,
-  Current: {
-    slots: {
-      '1': [
-        {
-          id: 1,
-          hero: true,
-          desc: 'Landsort Lager 5%',
-          brewery: 'Nynäshanms Ång Bryggeri',
-          slot: 1,
-          column: 'Current',
-        }
-      ]
-    }
-  },
-  Queued: {
-    slots: {
-      '6': [
-        {
-          id: 2,
-          hero: false,
-          desc: 'Roughneck IPA 6%',
-          brewery: 'Fjäderholmarna',
-          slot: 6,
-          column: 'Queued',
-        },
-        {
-          id: 3,
-          hero: false,
-          desc: 'Modus Hoperandi 6%',
-          brewery: 'Ska Brewing',
-          slot: 6,
-          column: 'Queued',
-        }
-      ]
-    }
-  },
-  RealAle1: {
-    slots: {
-      '1': []
-    }
-  },
-  RealAle2: {
-    slots: {
-      '1': []
-    }
-  },
-  RealAle3: {
-    slots: {
-      '1': []
-    }
-  },
-  CaskBench: {
-    slots: {
-      '1': []
-    }
-  },
-  KegBench: {
-    slots: {
-      '1': [
-        {
-          id: 4,
-          hero: false,
-          desc: 'Pickla Pils 5%',
-          brewery: 'Nynäshanms Ång Bryggeri',
-          slot: 1,
-          column: 'RealAle3',
-        },
-        {
-          id: 5,
-          hero: false,
-          desc: 'Sunny Sandy dry hopped IPA 6.5%',
-          brewery: 'Fjäderholmarna',
-          slot: 1,
-          column: 'RealAle1',
-        },
-        {
-          id: 6,
-          hero: false,
-          desc: 'Fantasma NEIPA 6%',
-          brewery: 'Magic Rock',
-          slot: 1,
-          column: 'KegBench',
-        }
-      ]
-    }
-  },
-  Recent: {
-    slots: {
-      '1': [
-        {
-          id: 7,
-          hero: false,
-          desc: 'Modus Hoperandi 6%',
-          brewery: 'Ska Brewing',
-          slot: 1,
-          column: 'Recent',
-        }
-      ]
-    }
-  },
   options: {
-    'Keg-rows': 14,
-    'Keg-groups': {
-      repeat: 7,
-      custom: [
-        {
-          title: 'Cellar',
-          count: 7,
-        }
-      ],
+    tapz: {
+      doubleClickTiming: 400,
+      'Keg-rows': 14,
+      'Keg-groups': {
+        repeat: 7,
+        custom: [
+          {
+            title: 'Cellar',
+            count: 7,
+          }
+        ],
+      }
     }
   }
 }
 
+// tapz specific controller
+export var _tapz = {
+  filename: 'Tapz',
+  num: 1,
+}
+
+export var _store = {
+  filename: 'Store',
+  num: 1,
+  cards: []
+}
+
+
+const cmsroot = 'http://localhost/tapz/';
+const dataFolder = 'data';
+export const writeData = async (data) => {
+  const response = await fetch(
+    `${ cmsroot }fs/fw.php`,
+    {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }
+  ).catch(err => { console.log(err) });
+
+  await response.text();
+}
+
+
+
+export const fetchData = async (fileName, folder=dataFolder, { fileExt='.json', backup=true } = {}) => {
+  let result = null;
+  let filePath = `${ cmsroot }/${ folder }/${ fileName }${ fileExt }`;
+  await fetch(filePath
+  ,{
+    headers : {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Pragma': 'no-cache',
+      'Cache-Control': 'no-cache',
+    },
+    cache: 'no-store',
+  })
+    .then(function(response){
+      // console.log(response)
+      return response.json();
+    })
+    .then(function(data) {
+      if ( data.filename === 'Tapz' )
+        _tapz = data;
+      else if ( data.filename === 'Store' )
+        _store = data;
+      
+      if ( /(?<!History)(TextContent)/g.test(fileName) ) {
+        // _gc.textContent = myJson;
+        // backup && (_gc.textBackup = JSON.parse(JSON.stringify(_gc.textContent)));
+      } else {
+        // result = myJson;
+      }
+    }).catch(err => { console.log(err) });
+  return result;
+}
 
 
 // custom hook
@@ -136,6 +98,14 @@ export const useCustomHook = (init, name) => {
 
   return [state, setState];
 };
+
+export const handleRecent = (targetColumn, targetSlot, targetIndex) => {
+  let targetData = _tapz[targetColumn].slots[targetSlot].splice(targetIndex, 1)[0];
+  targetData.column = 'Recent';
+  targetData.slot = 1;
+  targetData.hero = false;
+  _tapz.Recent.slots[1].unshift(targetData);
+}
 
 
 // debbugging purpouses

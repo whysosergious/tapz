@@ -1,12 +1,33 @@
 button {
-  width: 6rem;
-  padding: 0.3rem 0;
-  margin: 0 0.4rem;
-  border-radius: 0.3rem;
-  border: 0.01rem solid black;
+  min-height: 1.7rem;
+  min-width: 1.7rem;
+  padding: 0.3rem;
+  border: none;
   cursor: pointer;
-  background-color: rgb(245, 238, 229);
+  background: none;
 }
 button:hover {
-  background-color: white;
+  background-color: rgb(231, 220, 220);
+}
+
+.a-r :not(:last-child) {
+  margin-right: .2rem;
+}
+.a-l :not(:first-child) {
+  margin-left: .2rem;
+}
+button:not(.Tab) h4 {
+  color: #8b8bc9;
+}
+button h4 {
+  color: #465a54;
+  width: 100%;
+  text-align: center;
+}
+
+button.active {
+  background-color: #6c857d;
+}
+button.active h4 {
+  color: white;
 }

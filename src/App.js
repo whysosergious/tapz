@@ -1,4 +1,5 @@
 import './App.css';
+import './AppGeneral.css';
 import './fonts.css';
 import './typography.css';
 

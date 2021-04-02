@@ -1,4 +1,4 @@
-.Task-Form-Container {
+.Card-Form-Container {
   /* display: flex; */
   justify-content: center;
   align-items: center;
@@ -7,11 +7,16 @@
   left: 0;
   height: 100vh;
   width: 100vw;
-  background-color: rgba(0, 0, 0, 0.479);
+  
   z-index: 10;
 }
 
-.Task-Form {
+.Overlay {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.479);
+}
+.Card-Form {
   display: flex;
   position: absolute;
   flex-direction: column;
@@ -20,7 +25,7 @@
   right: 0;
   bottom: 2rem;
   left: 0;
-  padding: 2rem 1rem;
+  padding: .4rem .4rem 2rem .4rem;
   margin: auto;
   height: fit-content;
   max-height: 95vh;
@@ -30,26 +35,76 @@
   overflow-y: auto;
 }
 
-input,
-textarea {
+input {
   min-width: 100%;
   max-width: 100%;
   padding: 0.3rem;
-  margin-bottom: 0.7rem;
-}
-textarea {
-  min-height: 4rem;
-  height: 7rem;
+  margin: .2rem 0 0.7rem 0;
+  border: none;
 }
 
-.Buttons-Wrapper {
+.Store-Container,
+.Input-Container {
+  padding: 1rem;
+}
+
+.Button-Container {
   display: flex;
   position: relative;
-  margin-top: 4rem;
 }
-.Buttons-Wrapper :first-child {
+
+.Card-Form .Tab {
+  padding-top: .4rem;
+}
+
+/* align right */
+.a-r :first-child {
   margin-left: auto;
 }
-button {
-  cursor: default;
+/* fill and center */
+.fill > * {
+  display: flex;
+  flex-basis: 100%;
+}
+
+/* bottom border */
+.b-b {
+  border-bottom: .1rem solid #6c857d;
+}
+
+.Button-Container h4.Card-Action-Status {
+  align-self: center;
+  padding: .3rem 0;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.List-Container {
+  height: 50vh;
+  padding: .4rem 0 2rem 0;
+  overflow-y: auto;
+}
+
+.List-Container .Card {
+  height: 2.4rem;
+  padding-left: 2.2rem;
+  max-width: unset;
+  margin: .6rem .4rem;
+}
+.List-Container .Card h4:first-child {
+  margin-right: .5rem;
+}
+
+.List-Container .Card-Wrapper {
+  position: relative;
+}
+.List-Container .Check-Box {
+  display: block;
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 1.1rem;
+  margin: auto 0;
+}
+.List-Container .Card h4:nth-child(2) {
+  display: block;
 }

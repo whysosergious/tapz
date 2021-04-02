@@ -7,10 +7,15 @@
   /* background-color: rgb(227, 238, 234); */
 }
 
-.Column-Title {
+.Column-Heading-Group {
+  display: flex;
   padding-left: .6rem;
   margin-bottom: .3rem;
   border-bottom: .1rem solid rgb(202, 181, 181);
+}
+
+.Column-Heading-Group :first-child {
+  margin-right: auto;
 }
 
 .Column .Container {
@@ -19,9 +24,6 @@
 /* .Column.Cask {
   top: 3rem;
 } */
-.Bench {
-  grid-column: 2;
-}
 
 
 .Entry-Slot {
@@ -33,9 +35,7 @@
   background-color: #e8fff8;
   
 }
-.Bench .Entry-Slot {
-  padding: 0 .2rem .2rem 0;
-}
+
 .columns .Entry-Slot {
   flex-direction: column;
 }
@@ -59,11 +59,18 @@
   margin-top: 1rem;
 }
 
+.Bench {
+  grid-column: 2;
+}
+
 .Bench .Entry-Slot {
   flex-wrap: wrap;
   height: fit-content;
   padding: .2rem .2rem .4rem .2rem;       /* This should not be needed, check the idle meassage */
 }
+/* .Bench .Entry-Slot {
+  padding: 0 .2rem .2rem 0;
+} */
 .Idle-Message {
   padding: .2rem 0 0 .6rem;
   line-height: 2rem;
@@ -77,9 +84,7 @@
   min-width: 1rem;
   text-align: right;
   position: absolute;
-  top: 0; bottom: 0;
   left: -1.6rem;
-  margin: auto 0;
 }
 
 

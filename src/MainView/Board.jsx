@@ -33,7 +33,8 @@ const Board = () => {
         <Column title="Cask Bench" 
           type="Bench"
           direction="rows"
-          widthMod={ 3 } 
+          widthMod={ 3 }
+          addable={ true }
         />
       </div>
 
@@ -42,6 +43,7 @@ const Board = () => {
           type="Bench"
           direction="rows"
           widthMod={ 3 }
+          addable={ true }
         />
       </div>
 

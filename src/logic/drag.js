@@ -1,7 +1,7 @@
 /**
  * Dragging logic
  */
-import { _gc, _tapz } from "logic/gc";
+import { _gc, _tapz, handleRecent } from "logic/gc";
 
 let dragY,
   dragX = 0;
@@ -70,20 +70,19 @@ const drop = event => {
     heroData.hero = willBeHero;
 
     if ( willBeHero === 'true' && targetIndex !== null ) {
-      let targetData = _tapz[targetColumn].slots[targetSlot].splice(targetIndex, 1)[0];
-      targetData.column = 'Recent';
-      targetData.slot = 1;
-      targetData.hero = false;
-      _tapz.Recent.slots[1].push(targetData);
+      handleRecent(targetColumn, targetSlot, targetIndex);
     }
     
 
     targetIndex === null ? _tapz[targetColumn].slots[targetSlot].push(heroData)
       : _tapz[targetColumn].slots[targetSlot].splice(targetIndex, 0, heroData);
 
-    _gc[targetColumn].dispatch();
-    _gc[heroColumn].dispatch();
-    _gc.Recent.dispatch();  
+    // if (dragEntryOffsetY <= 10 && dragEntryOffsetY >= -10 && dragEntryOffsetX <= 10 && dragEntryOffsetX >= -10) {
+      _gc[targetColumn].dispatch();
+      _gc[heroColumn].dispatch();
+      _gc.Recent.dispatch(); 
+    // }
+     
   }
   
   reset();

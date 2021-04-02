@@ -4,10 +4,10 @@
 import React from "react";
 import "./Button.css";
 
-const Button = ({ text, action, clicked }) => {
+const Button = ({ text='', action, clicked, altClass }) => {
   return (
-    <button onClick={(ev) => clicked(ev, action)}>
-      <h3>{text}</h3>
+    <button className={ altClass } onClick={(ev) => clicked(ev, action)}>
+      <h4>{text}</h4>
     </button>
   );
 };
