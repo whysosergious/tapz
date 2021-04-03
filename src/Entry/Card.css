@@ -2,7 +2,8 @@
   --margin: .2rem;
 
   display: flex;
-  flex-basis: 100%;
+  flex-basis: 1%;
+  flex-grow: 1;
   position: relative;
   /* flex-direction: column; */
   padding: 0 0.6rem 0 .4rem;
@@ -31,13 +32,11 @@
   background-color: rgb(131, 65, 65);
 }
 
-.Card.expand {
-  flex-shrink: 0;
+div.Card.expand {
+  flex-grow: 10;
 }
 
 .Bench .Card {
-  flex-basis: calc(7rem);
-  flex-grow: 1;
   height: 2rem;
 }
 

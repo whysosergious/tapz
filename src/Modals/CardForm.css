@@ -29,7 +29,8 @@
   margin: auto;
   height: fit-content;
   max-height: 95vh;
-  max-width: 60vw;
+  width: 80vw;
+  max-width: 33rem;
   background-color: rgb(227, 238, 234);
   border-radius: 0.3rem;
   overflow-y: auto;

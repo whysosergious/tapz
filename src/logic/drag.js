@@ -1,19 +1,22 @@
 /**
  * Dragging logic
  */
-import { _gc, _tapz, handleRecent } from "logic/gc";
+import { _gc, _tapz, handleRecent, writeData } from "logic/gc";
 
 let dragY,
   dragX = 0;
 let hero, heroId, heroIndex, heroColumn, heroSlot, parent;
+let dragging = false;
 export const startDrag = (event) => {
   event.preventDefault();
   event.stopPropagation();
 
-  dragY = event.screenY;
-  dragX = event.screenX;
+  let pos = /(?:mouse)/g.test(event.type) ? event : event.touches[0];
 
-  hero = event.currentTarget;
+  dragY = pos.screenY;
+  dragX = pos.screenX;
+
+  hero = event.target;
   heroId = event.target.dataset.id;
   heroColumn = hero.dataset.column;
   heroSlot = hero.dataset.slot;
@@ -29,30 +32,51 @@ export const startDrag = (event) => {
   hero.style.pointerEvents = 'none';
   parent.style.userselect = 'none';
 
-  window.addEventListener("mousemove", dragElement);
-  window.addEventListener("mouseup", drop, { once: true });
+  if ( /(?:mouse)/g.test(event.type) ) {
+    window.addEventListener("mousemove", dragElement);
+    window.addEventListener("mouseup", drop, { once: true, passive: true });
+  } else {
+    window.addEventListener("touchmove", dragElement, { passive: false, cancellable: true });
+    window.addEventListener("touchend", drop, { once: true, passive: true });
+    window.addEventListener("touchcancel", reset, { once: true });
+  }
 };
 
 let dragEntryOffsetY, dragEntryOffsetX;
 const dragElement = (event) => {
+  event.preventDefault();
+  let pos = /(?:mouse)/g.test(event.type) ? event : event.touches[0];
   if (hero) {
-    dragEntryOffsetY = event.screenY - dragY;
-    dragEntryOffsetX = event.screenX - dragX;
+    dragEntryOffsetY = pos.screenY - dragY;
+    dragEntryOffsetX = pos.screenX - dragX;
     hero.style.transform = `translate3d(${dragEntryOffsetX}px,${dragEntryOffsetY}px,0)`;
+
+    if (dragEntryOffsetY >= 10 || dragEntryOffsetY <= -10 || dragEntryOffsetX >= 10 || dragEntryOffsetX <= -10)
+      dragging = true;
+    else
+      dragging = false;
   }
 };
 
 const drop = event => {
-  event.preventDefault();
   event.stopPropagation();
-  // console.log(event.target.dataset.column, event.target.dataset.slot, event.target.dataset.id);
-  let targetId = event.target.dataset.id;
-  let targetColumn = event.target.dataset.column;
-  let targetSlot = event.target.dataset.slot;
-  let willBeHero = event.target.dataset.hero;
+
+  let pos = /(?:mouse)/g.test(event.type) ? event : event.changedTouches[0];
+  let target = /(?:mouse)/g.test(event.type) ? event.target : document.elementFromPoint(
+    pos.pageX,
+    pos.pageY
+  );
+
+  let targetId = target.dataset.id;
+  let targetColumn = target.dataset.column;
+  let targetSlot = target.dataset.slot;
+  let willBeHero = target.dataset.hero;
   let targetIndex = null;
-  
-  if ( targetColumn && targetSlot ) {
+  let slotCheck = !targetId || /(?:Bench)|(?:Recent)/g.test(targetColumn) || 
+    _tapz[targetColumn].slots[targetSlot].length < 4 || 
+    (heroColumn === targetColumn && heroSlot === targetSlot);
+
+  if ( targetColumn && targetSlot && dragging && slotCheck) {
     targetId && _tapz[targetColumn].slots[targetSlot].forEach((e,i) => {
       if ( e.id.toString() === targetId ) {
         targetIndex = i;
@@ -73,16 +97,13 @@ const drop = event => {
       handleRecent(targetColumn, targetSlot, targetIndex);
     }
     
-
     targetIndex === null ? _tapz[targetColumn].slots[targetSlot].push(heroData)
       : _tapz[targetColumn].slots[targetSlot].splice(targetIndex, 0, heroData);
-
-    // if (dragEntryOffsetY <= 10 && dragEntryOffsetY >= -10 && dragEntryOffsetX <= 10 && dragEntryOffsetX >= -10) {
-      _gc[targetColumn].dispatch();
-      _gc[heroColumn].dispatch();
-      _gc.Recent.dispatch(); 
-    // }
-     
+    
+    _gc[targetColumn].dispatch();
+    _gc[heroColumn].dispatch();
+    // save on every rerender ( user action )
+    writeData(_tapz);
   }
   
   reset();
@@ -91,5 +112,7 @@ const drop = event => {
 const reset = () => {
   hero.removeAttribute("style");
   parent.removeAttribute("style");
-  window.removeEventListener("mousemove", dragElement);
+  window.removeEventListener("mousemove", dragElement, { passive: true });
+  window.removeEventListener("touchmove", dragElement, { passive: true });
+  dragging = false;
 }

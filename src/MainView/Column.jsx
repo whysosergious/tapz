@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import "./Column.css";
 
 // logic
-import { useCustomHook, _gc, _tapz, _store, writeData } from "logic/gc";
+import { useCustomHook, _gc, _tapz, _store } from "logic/gc";
 
 // components
 import Card from "Entry/Card";
@@ -29,6 +29,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
     modals = [];
     renderComponent();
   };
+
   const handleAddCard = () => {
     let stamp = Date.now() + count++;
 
@@ -66,16 +67,26 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
 
   const createCards = ( entries ) => {
     let cards = [];
-    entries?.forEach(e => {
-      let storeCard = _store.cards.find(card => card.storeId === e.storeId);
-      let card = <Card key={ e.id }
-        data={ e }
-        desc={ storeCard.desc }
-        brewery={ storeCard.brewery }
-        clicked={ handleViewCard }
-      />;
-      slotType === 'hero' ? cards = [card] : cards.push(card);      
-    });
+
+    try {
+      entries?.forEach((e, i) => {
+        
+        let storeCard = _store.cards.find(card => card.storeId === e.storeId);
+        e.desc = storeCard.desc;
+        e.brewery = storeCard.brewery;
+        let card = <Card key={ e.id }
+          data={ e }
+          desc={ storeCard.desc }
+          brewery={ storeCard.brewery }
+          clicked={ handleViewCard }
+        />;
+        slotType === 'hero' ? cards = [card] : cards.push(card);   
+        
+        // insert a span element after every x card with a full width flex-basis for row break
+        if ( type === 'Bench' && (i+1) % 4 === 0)
+          cards.push(<span key={ `${ column }RowBreak${ i }` } className="Bench-Row-Break" />);
+      });
+    } catch(exc) { console.log(exc) }
     return cards[0] ? cards : undefined ;
   }
 
@@ -89,7 +100,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
       }
 
       slots.push(
-        <div key={ `${ type }${ Date.now() + i }` }
+        <div key={ `${ column }${ i }` }
           className={ `Entry-Slot ${ type } ${ slotType } ${ firstInGroup }` }
           data-column={ column }
           data-slot={ i }
@@ -105,7 +116,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
     _tapz[column].slots[1] || ( _tapz[column].slots[1] = [] );
     _tapz[column].slots[2] || ( _tapz[column].slots[2] = [] );
     slots = [
-      <div key={ `${ type }${ Date.now() + 1 }` }
+      <div key={ `${ column }${ 1 }` }
         className={ `Entry-Slot ${ type } hero` }
         data-column={ column }
         data-slot={ 1 }
@@ -113,7 +124,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
       >
         { createCards(_tapz[column].slots[1]) }
       </div>,
-      <div key={ `${ type }${ Date.now() + 2 }` }
+      <div key={ `${ column }${ 2 }` }
         className={ `Entry-Slot large ${ type }` }
         data-column={ column }
         data-slot={ 2 }
@@ -125,7 +136,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
   } else {
     _tapz[column].slots[1] || ( _tapz[column].slots[1] = [] );
     slots = [
-      <div key={ `${ type }${ Date.now() }` }
+      <div key={ `${ column }${ 1 }` }
         className={ `Entry-Slot ${ type }` }
         data-column={ column }
         data-slot={ 1 }
@@ -135,9 +146,6 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
       </div>
     ]
   }  
-
-  // save on every rerender ( user action )
-  writeData(_tapz);
 
   return (      
     <div className={ `Column ${ type } ${ direction }` }

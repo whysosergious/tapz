@@ -105,9 +105,11 @@ export const handleRecent = (targetColumn, targetSlot, targetIndex) => {
   targetData.slot = 1;
   targetData.hero = false;
   _tapz.Recent.slots[1].unshift(targetData);
+  _gc.Recent.dispatch();
 }
 
 
 // debbugging purpouses
 window.tapz = _tapz;
+window.store = _store;
 window.gc = _gc;

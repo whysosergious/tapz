@@ -68,9 +68,9 @@
   height: fit-content;
   padding: .2rem .2rem .4rem .2rem;       /* This should not be needed, check the idle meassage */
 }
-/* .Bench .Entry-Slot {
-  padding: 0 .2rem .2rem 0;
-} */
+.Bench-Row-Break {
+  flex-basis: 100%;
+}
 .Idle-Message {
   padding: .2rem 0 0 .6rem;
   line-height: 2rem;

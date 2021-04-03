@@ -91,6 +91,7 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
   const handleAddItemsToBoard = () => {
     _tapz[column].slots[1].push(...selected);
     handleClose();
+    writeData(_tapz);
   }
 
   const handleCheck = (data, add) => {

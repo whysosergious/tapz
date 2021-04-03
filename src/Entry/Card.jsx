@@ -8,33 +8,54 @@ import "./Card.css";
 import { startDrag } from "logic/drag";
 import { _gc } from "logic/gc";
 
-let doubleClickTimer = setTimeout;
-let click = false;
+let doubleClickTimer = window.setTimeout;
+
+let viewingElement;
 const Card = ({ data, desc, brewery, marked=false, checked, clicked, draggable=true }) => {
   const { id, storeId, slot, column, hero } = data;
   const [ checkState, setChecked ] = useState('');
   let origY,
     origX = 0;
+  
+  let eventElement;
+  const handleMouseDown = event => {
+    if ( 'touchstart' in window )
+      return;
 
-  const handlePress = (event) => {
-    origY = event.screenY;
-    origX = event.screenX;
+    eventPress(event);
+    window.addEventListener("mouseup", handleRelease, { once: true });
+  }
+
+  const handleTouchStart = event => {
+    eventPress(event);
+  }
+
+  const eventPress = event => {
+    eventElement = event.target;
+    let pos = /(?:mouse)/g.test(event.type) ? event : event.touches[0];
+    origY = pos.screenY;
+    origX = pos.screenX;
     startDrag(event);
-    window.addEventListener("mouseup", handleRelease);
-    
-  };
-  const handleRelease = (event) => {
-    let offsetY = event.screenY - origY;
-    let offsetX = event.screenX - origX;
+  }
+
+  let click = false;
+  const handleRelease = event => {
+    let pos = /(?:mouse)/g.test(event.type) ? event : event.changedTouches[0];
+    let offsetY = pos.screenY - origY;
+    let offsetX = pos.screenX - origX;
+    window.clearTimeout(doubleClickTimer);
+    doubleClickTimer = window.setTimeout(()=>{
+      click = false;
+    }, _gc.options.tapz.doubleClickTiming)
+    click && clicked(storeId, desc, brewery);
+    click = true;
     if (offsetY <= 10 && offsetY >= -10 && offsetX <= 10 && offsetX >= -10) {
-      clearTimeout(doubleClickTimer);
-      doubleClickTimer = setTimeout(()=>{
-        click = false;
-      }, _gc.options.tapz.doubleClickTiming)
-      click && clicked(storeId, desc, brewery);
-      click = true;
+      
+      
+      viewingElement !== eventElement && viewingElement?.classList.remove('expand');
+      viewingElement = eventElement;
+      viewingElement.classList.add('expand');
     }
-    window.removeEventListener("mouseup", handleRelease);
   };
 
   const handleMouseUp = () => {
@@ -62,8 +83,9 @@ const Card = ({ data, desc, brewery, marked=false, checked, clicked, draggable=t
         data-column={column}
         data-slot={slot}
         data-hero={hero}
-        onMouseDown={ draggable && handlePress }
-        onMouseUp={ draggable || handleMouseUp }
+        onMouseDown={ draggable ? handleMouseDown : undefined }
+        onTouchStart={ draggable ? handleTouchStart : undefined }
+        onMouseUp={ !draggable ? handleMouseUp : undefined }
       >
         
         <h4>{desc}</h4>
