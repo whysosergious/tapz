@@ -6,14 +6,23 @@ import "./Card.css";
 
 // logic
 import { startDrag } from "logic/drag";
-import { _gc } from "logic/gc";
+import { _gc, _store } from "logic/gc";
+
+// components
+import CheckBox from 'shared/CheckBox';
+
 
 let doubleClickTimer = window.setTimeout;
 
 let viewingElement;
-const Card = ({ data, desc, brewery, marked=false, checked, clicked, draggable=true }) => {
+const Card = ({ data, desc, brewery, color, marked=false, select, clicked, draggable=true }) => {
   const { id, storeId, slot, column, hero } = data;
-  const [ checkState, setChecked ] = useState('');
+  // const [ , setState ] = useState(null);
+
+  // const renderComponent = ( s=Date.now() ) => {
+  //   setState(s);
+  // }
+
   let origY,
     origX = 0;
   
@@ -47,7 +56,8 @@ const Card = ({ data, desc, brewery, marked=false, checked, clicked, draggable=t
     doubleClickTimer = window.setTimeout(()=>{
       click = false;
     }, _gc.options.tapz.doubleClickTiming)
-    click && clicked(storeId, desc, brewery);
+    console.log(color)
+    click && clicked(storeId, desc, brewery, color);
     click = true;
     if (offsetY <= 10 && offsetY >= -10 && offsetX <= 10 && offsetX >= -10) {
       
@@ -62,22 +72,15 @@ const Card = ({ data, desc, brewery, marked=false, checked, clicked, draggable=t
     clicked(storeId);
   }
 
-  const handleCheck = event => {
-    event.stopPropagation();
-    if ( checkState === '' ) {
-      setChecked('checked')
-      checked(data, true);
-    } else {
-      setChecked('');
-      checked(data, false);
-    }
+  const selectCard = bool => {
+    select(data, bool);
   }
-  marked && handleCheck();
+  marked && selectCard();
 
   return (
     <>
       <div
-        className={ `Card` }
+        className={ `Card ${ _gc.options.tapz.colors[color] }` }
         data-id={id}
         data-storeid={ storeId }
         data-column={column}
@@ -91,7 +94,8 @@ const Card = ({ data, desc, brewery, marked=false, checked, clicked, draggable=t
         <h4>{desc}</h4>
         <h4>{brewery}</h4>
       </div>
-      <span className={ `Check-Box ${ checkState }` } onClick={ handleCheck } />
+
+      <CheckBox checked={ selectCard } theme={ color <= 3 ? 'var(--light)' : 'var(--dark)' }/>
     </>
   );
 };

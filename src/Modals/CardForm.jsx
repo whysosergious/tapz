@@ -7,6 +7,7 @@ import './CardForm.css';
 // components
 import Card from 'Entry/Card';
 import Button from 'shared/Button';
+import ColorPicker from './ColorPicker';
 
 // logic
 import { writeData, _gc, _tapz, _store } from 'logic/gc';
@@ -31,20 +32,27 @@ _gc.CardForm = {
 let cardId = null;
 let activeList = 'store';
 let selected = [];
-let count = 0;
-const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
+let cardColor = 0;
+const CardForm = ({ storeId=null, desc=null, brewery=null, color, column, close }) => {
   const inputDescRef = useRef(null);
   const inputBreweryRef = useRef(null);
   const [ , setState ] = useState(null);
   
+  const setRandomCardColor = () => {
+    cardColor = Math.floor(Math.random() * _gc.options.tapz.colors.length);
+  }
+
   if ( cardId === null ) {
     cardId = storeId;
     formDesc = desc;
     formBrewery = brewery;
+    _gc.options.tapz.randomizeCardColors && setRandomCardColor();
+  } else {
+    cardColor = color;
   }
 
-  const renderComponent = () => {
-    setState(Date.now());
+  const renderComponent = ( s=Date.now() ) => {
+    setState(s);
   }
 
   const displayList = list => {
@@ -54,6 +62,8 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
 
   const handleClose = () => {
     selected = [];
+    _gc.tapzBoard.dispatch();
+    writeData(_tapz);
     clearAll();
     close();
   };
@@ -64,28 +74,25 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
         storeId: _store.num++,
         desc: formDesc,
         brewery: formBrewery,
+        color: cardColor
       }
       _store.cards.push(newItem);
       writeData(_store);
       clearAll();
+    } else if ( cardId !== null && formDesc ) {
+      _store.cards.forEach(card => {
+        if ( card.storeId === cardId ) {
+          card.desc = formDesc;
+          card.brewery = formBrewery;
+          card.color = cardColor;
+        }
+      });
+      writeData(_store).then(()=>{
+        column ? renderComponent() : _gc.tapzBoard.dispatch();
+        writeData(_tapz);
+      });
+      column || handleClose();
     }
-    // if (index >= 0) {
-    //   let card = _gc[column].cards[index];
-    //   card.title = formDesc;
-    //   card.desc = formDesc;
-    //   card.image = _gc.CardForm.image === 'none' ? image : _gc.CardForm.image;
-    // } else {
-    //   _gc[column].cards.push({
-    //     stamp,
-    //     column,
-    //     title: formDesc,
-    //     desc: formDesc,
-    //     image: _gc.CardForm.image,
-    //   });
-    // }
-
-    // _gc.CardForm.image = 'none';
-    // close();
   };
 
   const handleAddItemsToBoard = () => {
@@ -94,7 +101,7 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
     writeData(_tapz);
   }
 
-  const handleCheck = (data, add) => {
+  const selectCard = (data, add) => {
     if ( add ) {
       data.column = column;
       data.slot = 1;
@@ -103,7 +110,7 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
       selected.push(deepCopy);
     } else {
       selected.forEach((e,i) => {
-        if ( e === data )
+        if ( e.id === data.id )
           selected.splice(i, 1);
       });
     }
@@ -116,6 +123,8 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
       if ( card.storeId === cardId ) {
         inputDescRef.current.value = card.desc;
         inputBreweryRef.current.value = card.brewery;
+        formDesc = card.desc;
+        formBrewery = card.brewery;
       }
     });
     renderComponent();
@@ -147,14 +156,19 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
             data={ e }
             desc={ e.desc }
             brewery={ e.brewery }
+            color={ e.color }
             clicked={ handleEdit }
-            checked={ handleCheck }
+            select={ selectCard }
             draggable={ false }
           />
         </div>
       );
     });
     return cards;
+  }
+
+  const setCardColor = clr => {
+    cardColor = clr;
   }
 
   return (
@@ -189,6 +203,7 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
             defaultValue={formBrewery}
             placeholder="Brewery"
           ></input>
+          <ColorPicker color={ cardColor } editOnly={ column && false } onSelect={ setCardColor } />
         </div>
         
         { column && 
@@ -202,7 +217,7 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, column, close }) => {
             </div>
           </div> 
         }
-        <Button text={ column ? `Add Selected Items to ${ column }` : 'Save Changes' } clicked={ handleAddItemsToBoard }/>
+        <Button text={ column ? `Add Selected Items to ${ column }` : 'Save Changes' } clicked={ column ? handleAddItemsToBoard : handleSave }/>
       </div>
     </div>
   );

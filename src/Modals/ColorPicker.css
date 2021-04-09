@@ -1,0 +1,79 @@
+.Color-Picker-Container {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 1.4rem;
+  user-select: none;
+}
+
+
+.Swatches {
+  display: flex;
+  margin-left: auto;
+}
+
+.Swatch {
+  display: block;
+  position: relative;
+  height: 100%;
+  width: 2rem;
+}
+.Swatch.selected {
+  border: .1rem solid var(--theme);
+}
+
+body {
+  --stout: rgb(11, 17, 3);
+  --blueberry: rgb(41, 7, 46);
+  --brown: rgb(44, 32, 16);
+  --red: rgb(97, 16, 16);
+  --ipa: rgb(158, 126, 89);
+  --pale: rgb(180, 170, 84);
+  --wheat: rgb(208, 211, 35);
+  --lager: rgb(197, 219, 155);
+
+  --dark: rgb(22, 85, 71);
+  --light: rgb(245, 255, 253);
+  --theme: var(--dark);
+}
+
+/* colors */
+.stout {
+  --theme: var(--light);
+  background-color: var(--stout);
+}
+
+.blueberry {
+  --theme: var(--light);
+  background-color: var(--blueberry);
+}
+
+.brown {
+  --theme: var(--light);
+  background-color: var(--brown);
+}
+
+.red {
+  --theme: var(--light);
+  background-color: var(--red);
+}
+
+.ipa {
+  --theme: var(--dark);
+  background-color: var(--ipa);
+}
+
+.pale {
+  --theme: var(--dark);
+  background-color: var(--pale);
+}
+
+.wheat {
+  --theme: var(--dark);
+  background-color: var(--wheat);
+}
+
+.lager {
+  --theme: var(--dark);
+  background-color: var(--lager);
+}

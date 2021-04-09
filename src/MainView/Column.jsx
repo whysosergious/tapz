@@ -42,7 +42,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
     ];
     renderComponent();
   };
-  const handleViewCard = (storeId, desc, brewery) => {
+  const handleViewCard = (storeId, desc, brewery, clr) => {
     let stamp = Date.now() + count++;
     modals = [
       <CardForm
@@ -50,6 +50,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
         storeId={storeId}
         desc={desc}
         brewery={brewery}
+        color={ clr }
         close={handleCloseModal}
       />,
     ];
@@ -76,6 +77,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
         e.brewery = storeCard.brewery;
         let card = <Card key={ e.id }
           data={ e }
+          color={ storeCard.color }
           desc={ storeCard.desc }
           brewery={ storeCard.brewery }
           clicked={ handleViewCard }

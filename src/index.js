@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 // logic
-import { fetchData } from 'logic/gc';
+import { _gc, _tapz,  _store, fetchData } from 'logic/gc';
 
 fetchData('Store').then(fetchData('Tapz').then(()=>{
   ReactDOM.render(
@@ -15,4 +15,9 @@ fetchData('Store').then(fetchData('Tapz').then(()=>{
     document.getElementById('root')
   );
   reportWebVitals();
+
+  // debbugging purpouses
+  window.tapz = _tapz;
+  window.store = _store;
+  window.gc = _gc;
 }));

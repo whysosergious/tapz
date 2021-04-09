@@ -1,13 +1,27 @@
 /**
  * Board view
  */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Board.css";
+
+import { _gc } from 'logic/gc';
 
 // components
 import Column from "./Column";
 
 const Board = () => {
+  const [ , setState ] = useState(null);
+
+  const renderComponent = ( s=Date.now() ) => {
+    setState(s);
+  }
+
+  useEffect(() => {
+    _gc.tapzBoard = {
+      dispatch: renderComponent,
+    }
+  });
+
   return (
     <section>
       <div className="Group Keg">

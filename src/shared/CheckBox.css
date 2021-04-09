@@ -1,0 +1,43 @@
+.Check-Box {
+  display: none;
+  position: relative;
+  align-self: center;
+  flex-shrink: 0;
+  height: .9rem;
+  width: .9rem;
+  border: .1rem solid var(--theme);
+  border-radius: .3rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.Card-Form-Container .Check-Box {
+  display: flex;
+}
+.Check-Box::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  margin: auto;
+  height: .5rem;
+  width: .5rem;
+  border-radius: .1rem;
+}
+
+.Check-Box h4 {
+  line-height: .9rem;
+  padding-left: 1.2rem;
+}
+
+.Check-Box:hover::before {
+  background-color: var(--theme);
+  opacity: .2;
+}
+
+.Check-Box.checked::before {
+  background-color: var(--theme);
+  opacity: .8;
+}
+.Check-Box.checked:hover::before {
+  background-color: var(--theme);
+  opacity: 1;
+}

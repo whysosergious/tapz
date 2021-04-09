@@ -14,7 +14,18 @@ export const _gc = {
             count: 7,
           }
         ],
-      }
+      },
+      colors: [
+        'stout',
+        'blueberry',
+        'brown',
+        'red',
+        'ipa',
+        'pale',
+        'wheat',
+        'lager'
+      ],
+      randomizeCardColors: true,
     }
   }
 }
@@ -107,9 +118,3 @@ export const handleRecent = (targetColumn, targetSlot, targetIndex) => {
   _tapz.Recent.slots[1].unshift(targetData);
   _gc.Recent.dispatch();
 }
-
-
-// debbugging purpouses
-window.tapz = _tapz;
-window.store = _store;
-window.gc = _gc;
