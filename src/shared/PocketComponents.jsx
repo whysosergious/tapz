@@ -107,15 +107,17 @@ const ddHandler = ({ event=null, refs }) => {
 
 const ddTransform = ( ref, val=0 ) => {
   let hero = ref.dataset.hero;
+  let calHero = hero.slice(0, -1);
   hero === 'days' && ( hero = 'daysStatic' );
   let mm = hero === 'minutes' ? 1 : 0;
   if ((( ref.value < calendarValues[hero] || val < 0) && (ref.value > 1-mm || val > 0 )) || val===0 ) {
     ref.value = parseInt(ref.value) + val;
-    console.log(ref.value)
+    hero === 'months' && change(ref, 'month');
+    calendarValues[calHero] = hero === 'minutes' ? `0${ ref.value }` : ref.value;
+    set(`${ calendarValues.month }/${ calendarValues.day } ${ calendarValues.hour }:${ calendarValues.minute }`, 'Cissi');
     let m = hero === 'minutes' ? 0 : 1; // this causes problems
     ref.dd.style.transform = `translate3D(0, ${ (ref.value-m) * -_r.ddh }px, 0)`;
   }
-  
 }
 
 // reference collection
@@ -126,6 +128,8 @@ const _r = {
   minutesRef: null,
   ddh: 0
 }
+let change;
+let set;
 /**
  * Date picker 
  * @param {*} param0 
@@ -141,12 +145,13 @@ export const DatePicker = ({ callback, now=true }) => {
   const renderComponent = ( s=Date.now() ) => {
     setState(s);
   }
-
-  const change = ( event, target ) => {
-    calendarValues[target] = event.target.value;
+  set = callback;
+  change = ( ref, target ) => {
+    calendarValues[target] = ref.value;
     if ( target === 'month' ) {
       calendarOptions.days = calendarOptions.calc('days');
-      setDaysRef.current.value = calendarValues.day;  // so much hassle for such a small detail...
+      _r.daysRef.value > calendarValues.daysStatic && ( _r.daysRef.value = calendarValues.daysStatic );
+      ddTransform(_r.daysRef);
       renderComponent();
     }
   }
@@ -182,20 +187,18 @@ export const DatePicker = ({ callback, now=true }) => {
   return(
     <div className="Date-Picker-Container">
       <div className="Group Date">
-        <div class="Custom-Dropdown" onWheel={ ddScroll }>
+        <div class="Custom-Dropdown" onWheel={ ddScroll } data-hero={ 'months' }>
           <input className="Month" ref={ setMonthsRef } data-hero={ 'months' }
             defaultValue={ calendarValues.month || calendarValues.thisMonth }
-            onChange={ (e)=>change(e, 'month')}
           />
           <div className="Options-Container">
             { calendarOptions.months || calendarOptions.calc('months') }
           </div>
         </div>
         <h1>/</h1>
-        <div class="Custom-Dropdown" onWheel={ ddScroll }>
+        <div class="Custom-Dropdown" onWheel={ ddScroll } data-hero={ 'days' }>
           <input className="Day" ref={ setDaysRef } data-hero={ 'days' }
             defaultValue={ calendarValues.day || calendarValues.today }
-            onChange={ (e)=>change(e, 'day')}
           />
           <div className="Options-Container">
             { calendarOptions.days || calendarOptions.calc('days') }
@@ -203,20 +206,18 @@ export const DatePicker = ({ callback, now=true }) => {
         </div>
       </div>
       <div className="Group Time">
-        <div class="Custom-Dropdown" onWheel={ ddScroll }>
+        <div class="Custom-Dropdown" onWheel={ ddScroll } data-hero={ 'hours' }>
           <input className="Hours" ref={ setHourRef } data-hero={ 'hours' }
             defaultValue={ calendarValues.hour || calendarValues.thisHour }
-            onChange={ (e)=>change(e, 'hour')}
           />
           <div className="Options-Container">
             { calendarOptions.hours || calendarOptions.calc('hours') }
           </div>
         </div>
         <h1>:</h1>
-        <div class="Custom-Dropdown" onWheel={ ddScroll }>
+        <div class="Custom-Dropdown" onWheel={ ddScroll } data-hero={ 'minutes' }>
           <input className="Minutes" ref={ setMinRef } data-hero={ 'minutes' }
             defaultValue={ calendarValues.minute || calendarValues.thisMinute }
-            onChange={ (e)=>change(e, 'minute')}
           />
           <div className="Options-Container">
             { calendarOptions.minutes || calendarOptions.calc('minutes') }

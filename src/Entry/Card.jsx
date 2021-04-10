@@ -13,12 +13,17 @@ import CheckBox from 'shared/CheckBox';
 import Button from 'shared/Button';
 import Prompt from 'shared/Prompt';
 
+// pocket components
+import { TapForm, DatePicker } from 'shared/PocketComponents';
+
 // vector
 import { CrossCircle, DeleteIcon } from 'ass/vector/icons';
 
 
 let doubleClickTimer = window.setTimeout;
 
+let prompt = [];
+let stamp, who;
 let viewingElement;
 const Card = ({ data, desc, brewery, color, marked=false, select, clicked, draggable=true }) => {
   const { id, storeId, slot, column, hero } = data;
@@ -28,17 +33,41 @@ const Card = ({ data, desc, brewery, color, marked=false, select, clicked, dragg
     setState(s);
   }
 
+  const setTap = () => {
+    data.tapped = {
+      stamp,
+      who
+    }
+    prompt = [];
+    writeData(_tapz);
+    renderComponent();
+  }
+
+  const cancelTap = () => {
+    stamp = who = null;
+    prompt = [];
+    renderComponent();
+  }
+
+  const setDate = (d, w) => {
+    stamp = d;
+    who = w;
+  }
+
   const tapCard = (e) => {
     e && console.log(e,'double event');
     tapped = false;
-    let today = new Date();
-    let mm = today.getMinutes();
-    data.tapped = {
-      who: 'Cissi',
-      stamp: `${ today.getMonth()+1}/${ today.getDate()} ${ today.getHours() }:${ mm < 10 ? `0${ mm }` : mm }`
-    }
-    writeData(_tapz);
-    alert('Tap');
+    prompt = [
+      <Prompt accept={ setTap } decline={ cancelTap }
+        pocket={
+          <>
+            <TapForm data={{desc:'test'}}/>
+            <DatePicker callback={ setDate }/>
+          </>
+        }
+      />
+    ];
+    console.log(prompt)
     renderComponent();
   }
 
@@ -126,7 +155,7 @@ const Card = ({ data, desc, brewery, color, marked=false, select, clicked, dragg
     _gc.CardForm.dispatch();
   }
 
-  // const prompt = <Prompt />
+  
 
   return (
     <div className="Card-Holder">
@@ -164,7 +193,7 @@ const Card = ({ data, desc, brewery, color, marked=false, select, clicked, dragg
       <div className="Delete-Button" onClick={ deleteFromBank }>
         <DeleteIcon style={{ fill: color <= 3 ? 'var(--light)' : 'var(--dark)'}} />
       </div>
-      {/* { prompt } */}
+      { prompt }
     </div>
   );
 };
