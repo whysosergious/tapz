@@ -25,7 +25,7 @@ const Prompt = ({ text='', altClass, accept, decline, pocket }) => {
 
   return (
     <div className={`Card-Form-Container`}>
-      <div className="Overlay" onClick={ handleClose }>
+      <div className="Overlay" onClick={ handleDecline }></div>
         <div className={ `Prompt` }>
           { pocket }
           <div className="Full-Button-Container">
@@ -33,7 +33,6 @@ const Prompt = ({ text='', altClass, accept, decline, pocket }) => {
             <Button text="Cancel" altClass="decline" clicked={ handleDecline } />
           </div>
         </div>
-      </div>
     </div>
   );
 };
