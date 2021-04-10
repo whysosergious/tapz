@@ -40,40 +40,48 @@ body {
 /* colors */
 .stout {
   --theme: var(--light);
+  --bg: var(--stout);
   background-color: var(--stout);
 }
 
 .blueberry {
   --theme: var(--light);
+  --bg: var(--blueberry);
   background-color: var(--blueberry);
 }
 
 .brown {
   --theme: var(--light);
+  --bg: var(--brown);
   background-color: var(--brown);
 }
 
 .red {
   --theme: var(--light);
+  --bg: var(--red);
   background-color: var(--red);
 }
 
 .ipa {
   --theme: var(--dark);
+  --bg: var(--ipa);
   background-color: var(--ipa);
 }
 
 .pale {
   --theme: var(--dark);
+  --bg: var(--pale);
   background-color: var(--pale);
 }
 
 .wheat {
   --theme: var(--dark);
+  --bg: var(--wheat);
   background-color: var(--wheat);
 }
 
 .lager {
   --theme: var(--dark);
+  --bg: var(--lager);
   background-color: var(--lager);
 }

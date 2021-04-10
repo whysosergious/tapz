@@ -8,6 +8,10 @@ import { _gc } from 'logic/gc';
 
 // components
 import Column from "./Column";
+import Prompt from 'shared/Prompt';
+
+// pocket components
+import { TapForm, DatePicker } from 'shared/PocketComponents';
 
 const Board = () => {
   const [ , setState ] = useState(null);
@@ -24,6 +28,13 @@ const Board = () => {
 
   return (
     <section>
+      <Prompt pocket={
+          <>
+            <TapForm data={{desc:'test'}}/>
+            <DatePicker />
+          </>
+        }
+      />
       <div className="Group Keg">
         <Column title="Current"
           slotType="hero"

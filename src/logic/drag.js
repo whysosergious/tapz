@@ -23,6 +23,7 @@ export const startDrag = (event) => {
 
   _tapz[heroColumn].slots[heroSlot].forEach((e,i) => {
     if ( e.id.toString() === heroId ) {
+
       heroIndex = i;
     }
   });
@@ -30,6 +31,8 @@ export const startDrag = (event) => {
   parent = hero.parentElement;
   hero.style.zIndex = '10';
   hero.style.pointerEvents = 'none';
+  hero.style.transitionProperty = 'padding';
+  hero.parentElement.classList.add('dragging');
   parent.style.userselect = 'none';
 
   if ( /(?:mouse)/g.test(event.type) ) {
@@ -110,8 +113,15 @@ const drop = event => {
 };
 
 const reset = () => {
-  hero.removeAttribute("style");
-  parent.removeAttribute("style");
+  hero.style.pointerEvents = '';
+  hero.style.transform = '';
+  hero.style.transitionProperty = '';
+  hero.parentElement.classList.remove('dragging');
+  setTimeout(()=>{
+    hero.removeAttribute("style");
+    parent.removeAttribute("style");
+  }, 400)
+  
   window.removeEventListener("mousemove", dragElement, { passive: true });
   window.removeEventListener("touchmove", dragElement, { passive: true });
   dragging = false;

@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import "./Column.css";
 
 // logic
-import { useCustomHook, _gc, _tapz, _store } from "logic/gc";
+import { useCustomHook, _gc, _tapz, _store, writeData, fetchData } from "logic/gc";
 
 // components
 import Card from "Entry/Card";
@@ -66,27 +66,43 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
   }, []);
 
 
-  const createCards = ( entries ) => {
+  const createCards = ( entries, slot ) => {
     let cards = [];
 
     try {
       entries?.forEach((e, i) => {
         
         let storeCard = _store.cards.find(card => card.storeId === e.storeId);
-        e.desc = storeCard.desc;
-        e.brewery = storeCard.brewery;
-        let card = <Card key={ e.id }
-          data={ e }
-          color={ storeCard.color }
-          desc={ storeCard.desc }
-          brewery={ storeCard.brewery }
-          clicked={ handleViewCard }
-        />;
-        slotType === 'hero' ? cards = [card] : cards.push(card);   
-        
-        // insert a span element after every x card with a full width flex-basis for row break
-        if ( type === 'Bench' && (i+1) % 4 === 0)
-          cards.push(<span key={ `${ column }RowBreak${ i }` } className="Bench-Row-Break" />);
+        if ( storeCard ) {
+          e.desc = storeCard.desc;
+          e.brewery = storeCard.brewery;
+          let card = <Card key={ e.id }
+            data={ e }
+            color={ storeCard.color }
+            desc={ storeCard.desc }
+            brewery={ storeCard.brewery }
+            clicked={ handleViewCard }
+          />;
+          slotType === 'hero' ? cards = [card] : cards.push(card);   
+          
+          // insert a span element after every x card with a full width flex-basis for row break
+          if ( type === 'Bench' && (i+1) % 4 === 0)
+            cards.push(<span key={ `${ column }RowBreak${ i }` } className="Bench-Row-Break" />);
+
+        } else {
+          // managing deleted store cards
+          if ( _store.cards.length < 1 ) {
+            fetchData('Store').then(()=>{
+              _gc.tapzBoard.dispatch();
+              console.log('refetched _store data');
+            });
+            return;
+          }
+            
+
+          _tapz[column].slots[slot].splice(i,1);
+          _gc.watch(writeData, _tapz);
+        }
       });
     } catch(exc) { console.log(exc) }
     return cards[0] ? cards : undefined ;
@@ -110,7 +126,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
         >
           { slotType === 'hero' ? <h1 className="Row-Title">{ i }</h1> : undefined }
           
-          { createCards(_tapz[column].slots[i]) }
+          { createCards(_tapz[column].slots[i], i) }
         </div> 
       );
     }
@@ -124,7 +140,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
         data-slot={ 1 }
         data-hero={ true }
       >
-        { createCards(_tapz[column].slots[1]) }
+        { createCards(_tapz[column].slots[1], 1) }
       </div>,
       <div key={ `${ column }${ 2 }` }
         className={ `Entry-Slot large ${ type }` }
@@ -132,7 +148,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
         data-slot={ 2 }
         data-hero={ false }
       >
-        { createCards(_tapz[column].slots[2]) }
+        { createCards(_tapz[column].slots[2], 2) }
       </div>
     ];
   } else {
@@ -144,7 +160,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
         data-slot={ 1 }
         data-hero={ false }
       >
-        { createCards(_tapz[column].slots[1]) || <h4 className="Idle-Message" >This bench is empty</h4> }
+        { createCards(_tapz[column].slots[1], 1) || <h4 className="Idle-Message" >This bench is empty</h4> }
       </div>
     ]
   }  

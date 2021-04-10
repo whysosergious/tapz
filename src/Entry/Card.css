@@ -1,38 +1,41 @@
-.Card {
-  --margin: .2rem;
-
+.Card-Holder {
   display: flex;
+  position: relative;
+  align-items: center;
   flex-basis: 1%;
   flex-grow: 1;
-  position: relative;
-  /* flex-direction: column; */
-  padding: 0 0.6rem 0 .4rem;
-  justify-content: flex-start;
+  flex-shrink: 1;
+  max-width: fit-content;
+  max-height: 2.9rem;
+  min-width: 0;
+  transition: flex-grow .6s ease;
+}
+
+.Card {
+  display: flex;
   align-items: center;
   height: 100%;
-  min-height: 0;
-  max-height: 2.9rem;
-  max-width: fit-content;
-  
-  min-width: 0;
-  background-color: rgb(128, 101, 101);
+  width: 100%;
+  padding: .3rem;
   border-radius: 0.3rem;
+  transition: padding .2s ease;
+  transition-property: padding, transform;
 }
-.rows .Entry-Slot:not(.hero) .Card:not(:first-child), .Bench .Card {
+.rows .Entry-Slot:not(.hero) .Card-Holder:not(:first-child), .Bench .Card-Holder {
   margin-left: .2rem; 
 }
-.columns .Entry-Slot:not(.hero) .Card:not(:first-child), .Bench .Card {
+.columns .Entry-Slot:not(.hero) .Card-Holder:not(:first-child), .Bench .Card-Holder {
   margin-top: .2rem;
 }
-.hero .Card, 
-.columns:not(.Bench) .Card {
+.hero .Card-Holder, 
+.columns:not(.Bench) .Card-Holder {
   max-width: unset;
 }
 .Card:hover {
   background-color: rgb(131, 65, 65);
 }
 
-div.Card.expand {
+div.Card-Holder.expand {
   flex-grow: 10;
 }
 
@@ -51,7 +54,82 @@ div.Card.expand {
   display: none;
   position: relative;
   font-size: .74rem;
-  top: .074rem;
+  top: .05rem;
   opacity: .7;
 }
 
+.Group:not(.Recent) .expand:not(.dragging) .Card {
+  padding-right: 1.6rem;
+}
+.dragging .Card {
+  transition-delay: .1s;
+}
+
+.Card-Holder .Delete-Button,
+.Card-Holder .Remove-Button {
+  visibility: hidden;
+  position: absolute;
+  right: .3rem;
+  height: 1rem;
+  width: 1rem;
+  opacity: 0;
+  cursor: pointer;
+  pointer-events: none;
+  transition: opacity .4s ease;
+  z-index: 11;
+}
+
+.Group:not(.Recent) .Card-Holder.expand .Remove-Button {
+  visibility: visible;
+  pointer-events: unset;
+  opacity: .7;
+}
+.dragging .Remove-Button {
+  opacity: 0 !important;
+  transition-duration: .05s;
+}
+
+
+/* cask specific rulesets */
+.Cask .Card {
+  /* flex-direction: column; */
+  /* justify-content: flex-start; */
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.Cask .Card h4 {
+  min-width: 100%;
+  /* overflow-x: hidden; */
+  /* overflow-y: visible; */
+}
+
+.Tap-Button {
+  display: none;
+  position: absolute;
+  
+  top: 42%;
+  left: .2rem;
+  min-height: 0;
+  max-height: 47%;
+
+  overflow: hidden;
+  opacity: .3;
+}
+.Card .Tap-Button h4 {
+  color: var(--theme);
+  font-size: .74rem;
+}
+
+.Cask .Tap-Button {
+  display: flex;
+}
+
+.Cask .Tap-Button:hover {
+  background: none;
+  opacity: 1;
+}
+
+.expand button.Tap-Button {
+  opacity: .7;
+}

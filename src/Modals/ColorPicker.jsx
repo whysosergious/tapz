@@ -1,7 +1,7 @@
 /**
  * Color picker for cards
  */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './ColorPicker.css';
 
 // logic
@@ -17,12 +17,16 @@ const ColorPicker = ({ color=0, onSelect, editOnly=true }) => {
   const toggleRandomColor = bool => {
     _gc.options.tapz.randomizeCardColors = bool;
   }
-
+  
   const switchColor = c => {
     onSelect(c);
     setColor(c);
   }
-  
+
+  useEffect(()=>{
+    setColor(color)
+  }, [color])
+
   const colorCards = _gc.options.tapz.colors.map((e,i) => {
     return(
       <div key={`color${ e }`}

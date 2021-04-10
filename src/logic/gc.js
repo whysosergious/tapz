@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+let watchTimer = setTimeout;
 // global controller
 export const _gc = {
   options: {
@@ -27,6 +28,15 @@ export const _gc = {
       ],
       randomizeCardColors: true,
     }
+  },
+  // timer to track changes and save or fetch when done
+  watch: (callback, target) => {
+    console.log('requested')
+    clearTimeout(watchTimer);
+    watchTimer = setTimeout(()=>{
+      callback(target);
+      console.log('done  ', target)
+    }, 400);
   }
 }
 
@@ -116,5 +126,6 @@ export const handleRecent = (targetColumn, targetSlot, targetIndex) => {
   targetData.slot = 1;
   targetData.hero = false;
   _tapz.Recent.slots[1].unshift(targetData);
+  _tapz.Recent.slots[1].length >= 12 && (_tapz.Recent.slots[1] = _tapz.Recent.slots[1].slice(0, 12));
   _gc.Recent.dispatch();
 }

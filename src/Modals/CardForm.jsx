@@ -15,18 +15,18 @@ import { writeData, _gc, _tapz, _store } from 'logic/gc';
 let formDesc,
   formBrewery = '';
 let titleInput, descInput;
-const handleDescChange = (event) => {
+const handleDescChange = (event, column) => {
   titleInput = event.target;
   formDesc = titleInput.value;
+  column && _gc.CardForm.dispatch();
 };
-const handleBreweryChange = (event) => {
+const handleBreweryChange = (event, column) => {
   descInput = event.currentTarget;
   formBrewery = descInput.value;
+  column && _gc.CardForm.dispatch();
 };
 
-_gc.CardForm = {
-  image: 'none',
-};
+_gc.CardForm = {};
 
 
 let cardId = null;
@@ -37,18 +37,16 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, color, column, close 
   const inputDescRef = useRef(null);
   const inputBreweryRef = useRef(null);
   const [ , setState ] = useState(null);
-  
+
   const setRandomCardColor = () => {
     cardColor = Math.floor(Math.random() * _gc.options.tapz.colors.length);
   }
 
-  if ( cardId === null ) {
+  if ( storeId !== null ) {
     cardId = storeId;
     formDesc = desc;
     formBrewery = brewery;
-    _gc.options.tapz.randomizeCardColors && setRandomCardColor();
-  } else {
-    cardColor = color;
+    cardColor = color || cardColor;
   }
 
   const renderComponent = ( s=Date.now() ) => {
@@ -76,11 +74,19 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, color, column, close 
         brewery: formBrewery,
         color: cardColor
       }
-      _store.cards.push(newItem);
+      _store.cards.unshift(newItem);
       writeData(_store);
+      selectCard(newItem, true);
       clearAll();
     } else if ( cardId !== null && formDesc ) {
       _store.cards.forEach(card => {
+        if ( card.storeId === cardId ) {
+          card.desc = formDesc;
+          card.brewery = formBrewery;
+          card.color = cardColor;
+        }
+      });
+      selected[0] && selected.forEach(card => {
         if ( card.storeId === cardId ) {
           card.desc = formDesc;
           card.brewery = formBrewery;
@@ -107,7 +113,7 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, color, column, close 
       data.slot = 1;
       data.id = _tapz.num++;
       let deepCopy = JSON.parse(JSON.stringify(data));
-      selected.push(deepCopy);
+      selected.unshift(deepCopy);
     } else {
       selected.forEach((e,i) => {
         if ( e.id === data.id )
@@ -125,6 +131,7 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, color, column, close 
         inputBreweryRef.current.value = card.brewery;
         formDesc = card.desc;
         formBrewery = card.brewery;
+        cardColor = card.color;
       }
     });
     renderComponent();
@@ -132,22 +139,33 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, color, column, close 
 
   const clearAll = () => {
     cardId = null;
+    formDesc = null;
+    formBrewery = null;
     inputDescRef.current.value = null;
     inputBreweryRef.current.value = null;
+    column && _gc.options.tapz.randomizeCardColors && setRandomCardColor();
     renderComponent();
   }
 
   useEffect(()=>{
-
+    _gc.CardForm.dispatch = renderComponent;
+    // column && _gc.options.tapz.randomizeCardColors && setRandomCardColor();
   }, []);
 
   let listResults = () => {
     let items;
     let cards = [];
-    if ( activeList === 'store' )
-      items = _store.cards;
-    else
+    if ( activeList === 'store' ) {
+      if (( formDesc || formBrewery ) && cardId === null ) {
+        let search = `(${ formDesc?.replace(/\s+/g, '.*') || '' }.*${ formBrewery?.replace(/\s+/g, '.*') || '' })`;
+        let rex = new RegExp(search, 'i');
+        items = _store.cards.filter(card => rex.test(`${ card.desc } ${ card.brewery }`));
+      } else {
+        items = _store.cards;
+      }
+    } else {
       items = selected;
+    }
 
     items.forEach(e => {
       cards.push(
@@ -159,6 +177,7 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, color, column, close 
             color={ e.color }
             clicked={ handleEdit }
             select={ selectCard }
+            marked={ selected.find(sc => sc.storeId === e.storeId) ? true : false }
             draggable={ false }
           />
         </div>
@@ -192,14 +211,14 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, color, column, close 
           <input
             type="text"
             ref={ inputDescRef }
-            onChange={handleDescChange}
+            onChange={ (e)=>handleDescChange(e, column) }
             defaultValue={formDesc}
             placeholder="Name and other stuff"
           ></input>
           <input
             type="text"
             ref={ inputBreweryRef }
-            onChange={handleBreweryChange}
+            onChange={ (e)=>handleBreweryChange(e, column) }
             defaultValue={formBrewery}
             placeholder="Brewery"
           ></input>

@@ -6,7 +6,6 @@
   /* flex-shrink: 0; */
   /* background-color: rgb(227, 238, 234); */
 }
-
 .Column-Heading-Group {
   display: flex;
   padding-left: .6rem;
@@ -49,6 +48,7 @@
 .Cask .Entry-Slot {
   height: 3.3rem;
 }
+
 .Entry-Slot.hero {
   background-color: #bfc4d2;
 }
