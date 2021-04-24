@@ -112,7 +112,7 @@ div.Card-Holder.expand {
   left: .2rem;
   min-height: 0;
   max-height: 47%;
-
+  max-width: 97%;
   overflow: hidden;
   opacity: .3;
 }

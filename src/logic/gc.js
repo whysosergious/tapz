@@ -31,7 +31,7 @@ export const _gc = {
   },
   // timer to track changes and save or fetch when done
   watch: (callback, target) => {
-    console.log('requested')
+    console.log('Changes to board requested')
     clearTimeout(watchTimer);
     watchTimer = setTimeout(()=>{
       callback(target);

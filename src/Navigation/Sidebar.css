@@ -1,0 +1,35 @@
+.Sidebar {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 4rem;
+  padding: .4rem 0 6vh 0;
+  background-color: rgb(12, 21, 22);
+}
+
+.Nav-Button {
+  height: 2.4rem;
+  width: 2.4rem;
+  padding: .5rem;
+  margin: .7rem 0;
+  opacity: .6;
+  cursor: pointer;
+}
+
+.Nav-Button:hover,
+.Nav-Button.active {
+  opacity: 1;
+}
+
+.Nav-Button.Logo {
+  padding: 0;
+  margin-bottom: 7vh;
+  opacity: 1;
+  cursor: unset;
+}
+
+.Nav-Button.Logout {
+  margin-top: auto;
+}
