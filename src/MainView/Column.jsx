@@ -1,7 +1,7 @@
 /**
  * Board Column
  */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Column.css";
 
 // logic
@@ -24,6 +24,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
   let column = title.replace(/[\s+]/g, "");
   _tapz[column] || structureData(`${ column }`, 'slots');
   const [ , setState] = useCustomHook([], column);
+  const [ minimized, setMinimized ] = useState(column === 'Recent' ? true : false);
 
   const handleCloseModal = () => {
     modals = [];
@@ -57,8 +58,8 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
     renderComponent();
   };
 
-  const renderComponent = () => {
-    setState(Date.now());
+  const renderComponent = (s=Date.now()) => {
+    setState(s);
   };
 
   useEffect(() => {
@@ -165,14 +166,19 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
     ]
   }  
 
+  const expandToggle = () => {
+    setMinimized(!minimized);
+  }
+
   return (      
-    <div className={ `Column ${ type } ${ direction }` }
+    <div className={ `Column ${ type } ${ direction } ${ minimized ? 'minimized' : '' }` }
       style={{ width: `${ 14 * widthMod }vw` }}
       data-column={column}
       data-key={column}
     >
       <div className="Column-Heading-Group">
         <h1 className="Column-Title">{title}</h1>
+        { column === 'Recent' && <h1 className="Text-Button" onClick={ expandToggle }>{ minimized ? 'show' : 'hide' }</h1> }
         { addable && <h1 className="Text-Button" onClick={ handleAddCard }>Add+</h1> }
       </div>
       

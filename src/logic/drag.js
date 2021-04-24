@@ -36,7 +36,7 @@ export const startDrag = (event) => {
   parent.style.userselect = 'none';
 
   if ( /(?:mouse)/g.test(event.type) ) {
-    window.addEventListener("mousemove", dragElement);
+    window.addEventListener("mousemove", dragElement, {passive : false});
     window.addEventListener("mouseup", drop, { once: true, passive: true });
   } else {
     window.addEventListener("touchmove", dragElement, { passive: false, cancellable: true });

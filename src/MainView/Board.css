@@ -8,6 +8,10 @@ section {
 
 }
 
+.Group {
+  margin-bottom: 2rem;
+}
+
 .Group, .Container {
   display: flex;
   position: relative;

@@ -58,7 +58,7 @@ const Card = ({ data, desc, brewery, color, marked=false, select, clicked, dragg
     e && console.log(e,'double event');
     tapped = false;
     prompt = [
-      <Prompt accept={ setTap } decline={ cancelTap }
+      <Prompt key={ `prompt` } accept={ setTap } decline={ cancelTap }
         pocket={
           <>
             <TapForm data={{desc:'test'}}/>
