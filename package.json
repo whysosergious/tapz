@@ -36,5 +36,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/pdfjs-dist": "^2.7.1",
+    "@types/react": "^17.0.5",
+    "pdfjs-dist": "^2.7.570",
+    "worker-loader": "^3.0.8"
   }
 }

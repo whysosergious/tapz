@@ -5,7 +5,7 @@ import "./DropBox.css";
 import { _gc } from "logic/gc";
 
 // icons
-import imageIcon from "ass/vector/image.svg";
+// import imageIcon from "ass/vector/image.svg";
 
 let updateComponent;
 
@@ -13,20 +13,7 @@ const openFileExplorer = (event) => {
   event.currentTarget.firstElementChild.click();
 };
 
-var reader = new FileReader();
-let previewSource;
-const handleDroppedFiles = (files) => {
-  if (files && files[0]) {
-    reader.onload = function (e) {
-      previewRef.current.style.display = "block";
-      previewSource = e.target.result;
-      previewRef.current.src = previewSource;
-      _gc.taskForm.image = previewSource;
-    };
 
-    reader.readAsDataURL(files[0]);
-  }
-};
 
 const handleDragEvents = (event) => {
   event.preventDefault();
@@ -38,9 +25,8 @@ const handleDragEvents = (event) => {
       : "expand";
     if (/drop/g.test(event.type)) {
       boxClass = "";
-      let dt = event.dataTransfer;
-      let files = dt.files;
-      handleDroppedFiles(files);
+      let files = event.dataTransfer.files;
+      callback(files);
     }
   } else {
     boxClass = /dragleave|drop/g.test(event.type) ? "" : "expand";
@@ -59,9 +45,9 @@ var dropBox;
 var boxClass = "";
 var messageClass = "";
 
-const handleInpuChange = (event) => {
+const handleInputChange = ( event ) => {
   let files = event.target.files;
-  handleDroppedFiles(files);
+  callback(files);
 };
 
 var fileInput = React.createElement("input", {
@@ -71,23 +57,20 @@ var fileInput = React.createElement("input", {
   name: "gallery",
   accept: "image/*",
   multiple: true,
-  onChange: handleInpuChange,
+  onChange: handleInputChange,
 });
 
-var previewRef;
-const DropBox = ({ image = "none" }) => {
+var callback;
+const DropBox = ({ changed }) => {
   const [ , setState] = useState(null);
-  previewRef = useRef();
   const dropBoxRef = useRef();
+  callback = changed;
 
   updateComponent = () => {
     setState(Date.now());
   };
 
   useEffect(() => {
-    if (image !== "none") {
-      previewRef.current.style.display = "block";
-    }
     dropBox = dropBoxRef.current;
     handleDropListeners(dropBox, "add");
     handleDropListeners(window, "add");
@@ -100,12 +83,6 @@ const DropBox = ({ image = "none" }) => {
 
   return (
     <>
-      <img
-        className="Preview-Image"
-        src={image}
-        alt="Preview"
-        ref={previewRef}
-      />
       <div
         className={`Drop-Box ${boxClass} ${messageClass}`}
         ref={dropBoxRef}
@@ -113,8 +90,8 @@ const DropBox = ({ image = "none" }) => {
       >
         {fileInput}
         <div className={`Drop-Box-Message`}>
-          <img src={imageIcon} alt="File icon" />
-          <h2 className={`small`}>Click to upload image or drag it here</h2>
+          {/* <img src={imageIcon} alt="File icon" /> */}
+          <h2 className={`small`}>Upload file</h2>
         </div>
       </div>
     </>
