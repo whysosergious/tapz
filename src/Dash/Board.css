@@ -1,0 +1,11 @@
+.Board-Grid {
+  display: grid;
+  gap: 3rem;
+}
+
+
+.Col-2 {
+  --left-col-width: auto;
+  --right-col-width: auto;
+  grid-template-columns: var(--left-col-width) var(--right-col-width);
+}

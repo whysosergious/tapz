@@ -1,0 +1,15 @@
+.Housing-Modal {
+  display: grid;
+  position: absolute;
+  grid-template-rows: max-content auto 4rem;
+  top: 4rem; right: 4rem; bottom: 4rem; left: 7rem;
+  margin: auto;
+  min-height: 10rem;
+  background-color: rgb(227, 238, 234);
+  box-shadow: 1rem 1.2rem 2.4rem -.7rem rgba(0, 0, 0, 0.26);
+  z-index: 14;
+}
+
+.Housing-Modal .Full-Button-Container {
+  height: 100%;
+}

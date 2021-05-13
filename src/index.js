@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 // logic
+// debugging purpouses
 import { _gc, _tapz,  _store } from 'logic/gc';
 
 ReactDOM.render(

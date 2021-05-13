@@ -1,6 +1,5 @@
 <?php
 
-	// filter CORS preflights?
 	if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
 		// get manager settings

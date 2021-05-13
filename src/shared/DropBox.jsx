@@ -2,12 +2,12 @@ import React, { useRef, useEffect, useState } from "react";
 import "./DropBox.css";
 
 // logic
-import { _gc } from "logic/gc";
+// import { _gc } from "logic/gc";
 
 // icons
 // import imageIcon from "ass/vector/image.svg";
 
-let updateComponent;
+let renderComponent;
 
 const openFileExplorer = (event) => {
   event.currentTarget.firstElementChild.click();
@@ -32,7 +32,7 @@ const handleDragEvents = (event) => {
     boxClass = /dragleave|drop/g.test(event.type) ? "" : "expand";
   }
 
-  updateComponent();
+  renderComponent();
 };
 
 const handleDropListeners = (target, action) => {
@@ -55,8 +55,8 @@ var fileInput = React.createElement("input", {
   type: "file",
   className: "File-Input",
   name: "gallery",
-  accept: "image/*",
-  multiple: true,
+  accept: "application/pdf",
+  multiple: false,
   onChange: handleInputChange,
 });
 
@@ -66,8 +66,8 @@ const DropBox = ({ changed }) => {
   const dropBoxRef = useRef();
   callback = changed;
 
-  updateComponent = () => {
-    setState(Date.now());
+  renderComponent = ( s=Date.now() ) => {
+    setState(s);
   };
 
   useEffect(() => {
@@ -84,14 +84,14 @@ const DropBox = ({ changed }) => {
   return (
     <>
       <div
-        className={`Drop-Box ${boxClass} ${messageClass}`}
+        className={`Drop-Box ${ boxClass } ${ messageClass }`}
         ref={dropBoxRef}
         onClick={openFileExplorer}
       >
         {fileInput}
-        <div className={`Drop-Box-Message`}>
+        <div className={ `Drop-Box-Message` }>
           {/* <img src={imageIcon} alt="File icon" /> */}
-          <h2 className={`small`}>Upload file</h2>
+          <h2 className={ `small` }>Upload file</h2>
         </div>
       </div>
     </>

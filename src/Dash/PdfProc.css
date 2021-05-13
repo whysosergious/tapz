@@ -1,0 +1,34 @@
+.Proc-Modal {
+  display: grid;
+  grid-template-rows: 3rem auto max-content;
+}
+
+.Preview-Container {
+  display: block;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding-bottom: 2rem;
+  overflow-y: auto;
+}
+
+.Preview-Wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  grid-template-rows: min-content max-content;
+}
+
+.Preview {
+  margin: .4rem;
+  box-shadow: .1rem .2rem 1rem -.2rem rgba(0, 0, 0, 0.233);
+}
+
+.Preview img {
+  display: block;
+  width: 100%;
+}
+
+.Component-Header {
+  display: flex;
+  align-items: center;
+}

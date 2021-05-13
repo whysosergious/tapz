@@ -43,6 +43,7 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
     ];
     renderComponent();
   };
+
   const handleViewCard = (storeId, desc, brewery, clr) => {
     let stamp = Date.now() + count++;
     modals = [
@@ -99,7 +100,6 @@ const Column = ({ title, type, slotType='', direction='columns', widthMod=1, add
             });
             return;
           }
-            
 
           _tapz[column].slots[slot].splice(i,1);
           _gc.watch(writeData, _tapz);

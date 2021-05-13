@@ -1,0 +1,16 @@
+.List-Item-Component {
+  display: flex;
+  align-items: center;
+  height: 2.4rem;
+  padding: 0 .6rem;
+}
+
+.List-Item-Component :first-child {
+  font-size: 1.2rem;
+  color: rgb(71, 67, 67);
+  margin-right: auto;
+}
+
+.List-Item-Component:nth-child(odd) {
+  background-color: rgba(55, 139, 107, 0.048);
+}

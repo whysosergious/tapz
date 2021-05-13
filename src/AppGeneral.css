@@ -31,3 +31,19 @@ input:focus {
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: fit-content auto;
 }
+
+.Component-Container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+.Component-Header {
+  display: flex;
+}
+
+.Component-Header :first-child {
+  margin-right: auto;
+}

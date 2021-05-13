@@ -17,16 +17,6 @@ import TapzBoard from 'Tapz/Board';
 import UsersBoard from 'Users/Board';
 import SettingsBoard from 'Settings/Board';
 
-// import pdfjsLib from 'pdfjs-dist';
-
-// const worker = new Worker();
-
-// worker.postMessage({ a: 1 });
-// worker.onmessage = function (event) {};
-
-// worker.addEventListener("message", function (event) {});
-
-
 
 function App() {
   const [ route ] = useRouterHook(null);
