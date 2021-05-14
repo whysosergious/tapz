@@ -12,9 +12,24 @@ import DropBox from 'shared/DropBox';
 //  import Column from "./Column";
 
 
-let pages, seoText;
-const PdfProc = ({ menu }) => {
+let pages = [], 
+  seoText = [];
+const PdfProc = ({ handle }) => {
+  const target = _gc[handle].target;
   const [ , setState ] = useState(null);
+
+  const reset = () => {
+    pages = [];
+    seoText = [];
+  }
+
+  const generatePreviews = (img) => {
+    pages.push(
+      <div key={ img.title } className="Preview">
+        <img src={ img.url } alt={ img.alt } />
+      </div>
+    );
+  }
 
   const renderComponent = ( s=Date.now() ) => {
     setState(s);
@@ -24,15 +39,24 @@ const PdfProc = ({ menu }) => {
     _gc.pdfProc = {
       dispatch: renderComponent,
     }
-  });
+    if ( pages.length !== target.images.length ) {
+      target.images.forEach(img => generatePreviews(img));
+      renderComponent();
+    }
+    return ()=>reset();
+  }, []);
 
   const handlePreview = files => {
     if ( !files[0] )
       return;
 
+    reset();
+    target.pdf = files[0];
+    //temp
+    target.seo = '';
+    target.images = [];
+
     let url = URL.createObjectURL(files[0]);
-    pages = [];
-    seoText = [];
 
     pdfjsLib.getDocument(url).promise.then( pdf => {
       let pageCount = pdf._pdfInfo.numPages,
@@ -56,27 +80,42 @@ const PdfProc = ({ menu }) => {
               canvasContext: context, 
               viewport: viewport
             }).promise.then(() => {
-              let imgB64 = canvas.toDataURL('image/jpeg');
-              
-              pages.push(
-                <div key={ `${ menu }page${ i }` } className="Preview">
-                  <img src={ imgB64 } alt={ `${ menu }page${ i }` } />
-                </div>
-              );
+              let imgB64 = canvas.toDataURL('image/jpeg'),
+                img = { 
+                  name: `${ _gc.options.fileprefix }${ target.title.replace(/[\s]/g,'')}Page${ i }`,
+                  ext: '.jpeg',
+                  url: imgB64, 
+                  alt: `${ _gc.options.imgaltprefix }${ target.title } Page-${ i }` 
+                }
+              target.images.push(img);
+              generatePreviews(img);
             })
           );
 
           promises.push(
             page.getTextContent().then( res => {
+              let pageText = [];
+
+              res.items.forEach((txt, i) => {
+                /^[\s]$/.test(txt.str) || 
+                  pageText.push(
+                    !pageText[0] ? 
+                      `<h1>${ txt.str }</h1>` : 
+                    (i % 10 === 0 && txt.str.length > 10) ? 
+                      `<h2>${ txt.str }</h2>` : 
+                      `<h3>${ txt.str }</h3>`
+                  );
+              });
+              target.seo += `<section>${ pageText.join('') }</section>`;
               seoText.push(
-                <h4 key={ `${ menu }text${ i }` }>{ res.items.map(txt => txt.str).join('') }</h4>
+                <h4 key={ `${ target.title }text${ i }` }>{ pageText }</h4>
               );
             })
           );
 
           Promise.all(promises).then(() => {
             renderComponent();
-            i < pageCount && renderPage();
+            i < pageCount ? renderPage() : console.log('loc ', target);
           });
         });
       }
@@ -87,9 +126,9 @@ const PdfProc = ({ menu }) => {
   return (
     <div className="Component-Container Proc-Modal">
       <div className="Component-Header">
-        <h1>{ menu }</h1>
-        <h1 className="Text-Button">PDF</h1>
-        <h1 className="Text-Button">Raw</h1>
+        <h1>{ target.title }</h1>
+        <a href={ target.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
+        <a href={ target.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Raw</h1></a>
       </div>
       
       <div className="Preview-Container">

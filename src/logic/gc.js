@@ -4,6 +4,8 @@ let watchTimer = setTimeout;
 // global controller
 export const _gc = {
   options: {
+    fileprefix: 'ots-',
+    imgaltprefix: 'Oliver Twist Stockholm ',
     tapz: {
       doubleClickTiming: 400,
       'Keg-rows': 14,
@@ -37,17 +39,64 @@ export const _gc = {
       callback(target);
       console.log('done  ', target)
     }, 400);
+  },
+  menu: {
+    filename: 'Menu',
+    ext: '.json',
+    history: false,
+    dir: 'root',
+    write: 'all',
+    lunch: {
+      title: 'Lunch',
+      filename: 'lunch',
+      pdf: '',
+      images: [],
+      seo: ''
+    },
+    food: {
+      title: 'A la carte',
+      filename: 'food',
+      pdf: '',
+      images: [],
+      seo: ''
+    },
+    drinks: {
+      title: 'Drinks',
+      filename: 'drinks',
+      pdf: '',
+      images: [],
+      seo: ''
+    },
+  },
+  seo: {
+    page: {
+      filename: '',
+      ext: '.html',
+      history: false,
+      dir: 'menu',
+      write: 'page',
+      head: '<!DOCTYPE html><head><title>Menu for Oliver Twist Stockholm. Restaurant, beer bar & pub in Södermalm</title><meta name="description" content="One of the best selections of domestic and imported beer in Sweden accompanied by greatly prepared traditional pub food & svensk husmanskost"><meta name="robots" content="index"><style>body{background-color:black}main{position:absolute}h4{color:black}</style></head><html><body>',
+      foot: '</body><footer><a href="https://zergski.com" alt="Dev homepage"><h4>developed by Sergio Stankevich { zergski.com }</h4></a></footer></html>'
+    }
   }
 }
 
 // tapz specific controller
 export var _tapz = {
   filename: 'Tapz',
+  ext: '.json',
+  history: true,
+  dir: 'root',
+  write: 'all',
   num: 1,
 }
 
 export var _store = {
   filename: 'Store',
+  ext: '.json',
+  history: true,
+  dir: 'root',
+  write: 'all',
   num: 1,
   cards: []
 }
@@ -64,6 +113,23 @@ export const writeData = async (data) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
+    }
+  ).catch(err => { console.log(err) });
+
+  await response.text();
+}
+
+export const uploadFiles = async (data) => {
+  console.log(data);
+  var formData = new FormData();
+  // formData.append('file', data.pdf);
+  formData.append('file', data.image);
+  const response = await fetch(
+    `${ cmsroot }fs/pdfu.php`,
+    {
+      method: "POST",
+
+      body: formData,
     }
   ).catch(err => { console.log(err) });
 
@@ -91,9 +157,9 @@ export const fetchData = async (fileName, folder=dataFolder, { fileExt='.json', 
     })
     .then(function(data) {
       if ( data.filename === 'Tapz' )
-        _tapz = data;
+        _tapz = Object.assign(_tapz, data);
       else if ( data.filename === 'Store' )
-        _store = data;
+        _store = Object.assign(_store, data);
       
       if ( /(?<!History)(TextContent)/g.test(fileName) ) {
         // _gc.textContent = myJson;
@@ -108,7 +174,7 @@ export const fetchData = async (fileName, folder=dataFolder, { fileExt='.json', 
 
 // custom hook
 export const useCustomHook = (init, name) => {
-  const [state, setState] = useState(init);
+  const [ state, setState ] = useState(init);
 
   if (!_gc[name]) {
     _gc[name] = {
@@ -117,7 +183,7 @@ export const useCustomHook = (init, name) => {
     };
   }
 
-  return [state, setState];
+  return [ state, setState ];
 };
 
 export const handleRecent = (targetColumn, targetSlot, targetIndex) => {

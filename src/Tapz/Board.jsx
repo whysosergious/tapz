@@ -21,17 +21,21 @@ const TapzBoard = () => {
     _gc.tapzBoard = {
       dispatch: renderComponent,
     }
-    fetchData('Store').then(async ()=>{
-      fetchData('Tapz').then(()=>{
-        setLoaded(true);
-      });
+
+    let promises = [];
+    promises.push(fetchData('Store'));
+    promises.push(fetchData('Tapz'));
+    Promise.all(promises).then(()=>{
+      setLoaded(true);
     });
   }, []);
+
+  if ( !loaded )
+    return(<></>);
 
   return (
     <section className="Board">
       <h1 className="Board-Heading">Draft Manager</h1>
-      { loaded && 
         <div className="Board-Content">
           <div className="Group Keg">
             <Column title="Current"
@@ -78,7 +82,6 @@ const TapzBoard = () => {
             />
           </div>
         </div>
-      }
     </section>
   );
 };

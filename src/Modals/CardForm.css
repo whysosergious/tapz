@@ -13,8 +13,8 @@
 }
 
 .Overlay {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   background-color: rgba(0, 0, 0, 0.479);
 }
 .Card-Form {
