@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import "./Board.css";
 
-import { _gc, writeData, uploadFiles } from 'logic/gc';
+import { _gc, writeData, uploadFormData, uploadFiles } from 'logic/gc';
  
 // components
 import List from 'shared/List';
@@ -112,27 +112,20 @@ const prepMenuData = data => {
   }).join('');
   pageFlight.page = `${ _gc.seo.page.head }<main>${ data.seo }</main><div>${ images }</div>${ _gc.seo.page.foot }`;
   
-  // let filesFlight = {
-  //   filename: `${ _gc.options.fileprefix }${ data.filename }`,
-  //   ext: '.pdf',
-  //   history: false,
-  //   dir: 'menu',
-  //   write: 'all',
-  //   pdf: data.pdf
-  // }
+  let fileFlight = {
+    file: data.images[0].url,
+    path: `/${ data.dir }/${ data.images[0].name }${ data.images[0].ext }`
+  }
 
-  let filesFlight = {
-    pdf: data.pdf,
-    images: {
-      // image: data.images[0].name + data.images[0].ext
-      
-    },
-    image: data.images[0].url
+  let formDataFlight = {
+    file: data.pdf,
+    path: `/${ data.dir }/${ _gc.options.fileprefix }${ data.filename }.pdf`
   }
 
   let promises = [];
-  // promises.push(writeData(pageFlight));
-  promises.push(uploadFiles(filesFlight));
+  promises.push(writeData(pageFlight));
+  promises.push(uploadFiles(fileFlight));
+  promises.push(uploadFormData(formDataFlight));
 
   Promise.all(promises).then(() => {
     let images = data.images.map(img => {

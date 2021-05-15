@@ -49,6 +49,7 @@ export const _gc = {
     lunch: {
       title: 'Lunch',
       filename: 'lunch',
+      dir: 'menu',
       pdf: '',
       images: [],
       seo: ''
@@ -56,6 +57,7 @@ export const _gc = {
     food: {
       title: 'A la carte',
       filename: 'food',
+      dir: 'menu',
       pdf: '',
       images: [],
       seo: ''
@@ -63,6 +65,7 @@ export const _gc = {
     drinks: {
       title: 'Drinks',
       filename: 'drinks',
+      dir: 'menu',
       pdf: '',
       images: [],
       seo: ''
@@ -119,17 +122,33 @@ export const writeData = async (data) => {
   await response.text();
 }
 
-export const uploadFiles = async (data) => {
-  console.log(data);
+export const uploadFormData = async (data) => {
   var formData = new FormData();
-  // formData.append('file', data.pdf);
-  formData.append('file', data.image);
+  formData.append('file', data.file);
+  formData.append('path', data.path);
   const response = await fetch(
-    `${ cmsroot }fs/pdfu.php`,
+    `${ cmsroot }fs/fdu.php`,
     {
       method: "POST",
-
+      // headers: {
+      //   'Content-Type': 'multipart/form-data'
+      // },
       body: formData,
+    }
+  ).catch(err => { console.log(err) });
+
+  await response.text();
+}
+
+export const uploadFiles = async (data) => {
+  const response = await fetch(
+    `${ cmsroot }fs/fu.php`,
+    {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
     }
   ).catch(err => { console.log(err) });
 

@@ -9,8 +9,12 @@
     $post_data = json_decode(file_get_contents('php://input'));
     
     // dir
-    $dir = $post_data->{'dir'};
-    $data_folder = $dir === 'root' ? "../data/" : "../data/{$dir}/";
+    // $dir = $post_data->{'dir'};
+    // $data_folder = $dir === 'root' ? "../data/" : "../data/{$dir}/";
+
+
+    $file = base64_decode(explode(',', $post_data->{'file'})[1]);
+    file_put_contents('../data/' . $post_data->{'path'}, $file);
 
 
     function deleteFiles($data, $album) {
@@ -33,14 +37,6 @@
 			file_put_contents("{$GLOBALS['app_root']}{$GLOBALS['gallery_dir']}{$album}/{$full_file_name}", $decoded);
 		}
 
-
-    function uploadPDF($pdf, $folder, $name) {
-      print_r($pdf);
-      // move_uploaded_file($pdf->{'file'}->{'tmp_name'}, $data_folder . $name);
-
-    }
-    
-    uploadPDF($post_data->{'pdf'}, $data_folder, $post_data->{'filename'} . $post_data->{'ext'});
 
     function staticEntryLoop($data_array, $pa='nomad') {
       
