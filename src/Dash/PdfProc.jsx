@@ -50,6 +50,8 @@ const PdfProc = ({ handle }) => {
     if ( !files[0] )
       return;
 
+    _gc.spinner.display(true);
+
     reset();
     target.pdf = files[0];
     //temp
@@ -96,12 +98,12 @@ const PdfProc = ({ handle }) => {
             page.getTextContent().then( res => {
               let pageText = [];
 
-              res.items.forEach((txt, i) => {
+              res.items.forEach(txt => {
                 /^[\s]$/.test(txt.str) || 
                   pageText.push(
                     !pageText[0] ? 
                       `<h1>${ txt.str }</h1>` : 
-                    (i % 10 === 0 && txt.str.length > 10) ? 
+                    (!pageText[1]) ? 
                       `<h2>${ txt.str }</h2>` : 
                       `<h3>${ txt.str }</h3>`
                   );
@@ -115,7 +117,8 @@ const PdfProc = ({ handle }) => {
 
           Promise.all(promises).then(() => {
             renderComponent();
-            i < pageCount ? renderPage() : console.log('loc ', target);
+            i < pageCount ? renderPage() : (_gc.spinner.display(false) || console.log('loc ', target));
+            
           });
         });
       }
@@ -127,8 +130,12 @@ const PdfProc = ({ handle }) => {
     <div className="Component-Container Proc-Modal">
       <div className="Component-Header">
         <h1>{ target.title }</h1>
-        <a href={ target.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
-        <a href={ target.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Raw</h1></a>
+        { /pdf/.test(target.pdf) &&
+          <a href={ target.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
+        }
+        { /html/.test(target.seo) &&
+          <a href={ target.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
+        }
       </div>
       
       <div className="Preview-Container">
@@ -138,10 +145,6 @@ const PdfProc = ({ handle }) => {
       </div>
       
       <DropBox changed={ handlePreview } />
-      {/* <div>
-        { seoText }
-      </div> */}
-      
     </div>
   );
 };

@@ -33,7 +33,7 @@
 		$full_file_name = $file_name . $file_ext;
 		
 		// folders .. folders
-		$data_folder = $dir === 'root' ? "../data/" : "../data/{$dir}/";
+		$data_folder = $dir === 'root' ? "../data/" : $dir === 'private' ? "../data/private/" : "../data/{$dir}/";
 
     if ( $save_history ) {
       $history_folder = $dir === 'root' ? "../data/history/" : "../data/{$dir}/history";

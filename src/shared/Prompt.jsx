@@ -11,9 +11,9 @@ import Button from 'shared/Button';
 let date, who;
 const Prompt = ({ text='', altClass, accept, decline, pocket }) => {
 
-  const handleClose = () => {
+  // const handleClose = () => {
 
-  }
+  // }
 
   const handleOk = () => {
     accept(date, who)

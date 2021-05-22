@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import "./Board.css";
 
-import { _gc, writeData, uploadFormData, uploadFiles } from 'logic/gc';
+import { _gc, _zcm, fetchData, writeData, uploadFormData, uploadFiles } from 'logic/gc';
  
 // components
 import List from 'shared/List';
@@ -17,6 +17,7 @@ import HousingModal from 'Modals/Housing';
 
 const DashBoard = () => {
   const [ , setState ] = useState(null);
+  const [ loadState, setLoadState ] = useState(false);
 
   const renderComponent = ( s=Date.now() ) => {
     setState(s);
@@ -26,66 +27,99 @@ const DashBoard = () => {
     _gc.dashBoard = {
       dispatch: renderComponent,
     }
-  });
+
+    let promises = [];
+    promises.push(fetchData('Menu'));
+    Promise.all(promises).then(() => {
+      setLoadState(true);
+    });
+  }, []);
  
   return (
     <section className="Board">
-      <h1 className="Board-Heading">Dash</h1>
-      <div className="Board-Grid Col-2"
-        style={{ 
-          '--left-col-width': '2fr',
-          '--right-col-width': '1fr'
-        }}
-      >
+      <h1 className="Board-Heading">Dashboard</h1>
+
+      { loadState && 
+        <div className="Board-Grid Col-2"
+          style={{ 
+            '--left-col-width': '2fr',
+            '--right-col-width': '1fr'
+          }}
+        >
         <List title="Menus" >
-          <ListItem title="Lunch" 
-            buttons={
-              <h1 className="Text-Button" 
-                onClick={ 
-                  ()=>_gc['pdfmodal'].open(true, 'menu', 'lunch') 
-                }>Edit</h1>
-            } 
-          />
-          <ListItem title="A la carte" 
-            buttons={
-              <h1 className="Text-Button" 
-              onClick={ 
-                ()=>_gc['pdfmodal'].open(true, 'menu', 'food') 
-              }>Edit</h1>
-            } 
-          />
-          <ListItem title="Drinks" 
-            buttons={
-              <h1 className="Text-Button" 
-              onClick={ 
-                ()=>_gc['pdfmodal'].open(true, 'menu', 'drinks') 
-              }>Edit</h1>
-            } 
-          />
-        </List>
-        <List title="Opening hours">
-          <ListItem title="Monday" 
-            content={
-              <h2 contentEditable="true">11-20</h2>
-            } 
-          />
-          <ListItem title="Tuesday" 
-            content={
-              <h2 contentEditable="true">11-20</h2>
-            } 
-          />
-          <ListItem title="Wednesday" 
-            content={
-              <h2 contentEditable="true">11-20</h2>
-            } 
-          />
-          <ListItem title="Thursday" 
-            content={
-              <h2 contentEditable="true">11-20</h2>
-            } 
-          />
-        </List>
-      </div>
+            <ListItem title="Lunch" 
+              buttons={
+                <>
+                  { /pdf/.test(_gc.menu.lunch.pdf) &&
+                    <a href={ _gc.menu.lunch.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
+                  }
+                  { /html/.test(_gc.menu.lunch.seo) &&
+                    <a href={ _gc.menu.lunch.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
+                  }
+                  <h1 className="Text-Button" 
+                    onClick={ 
+                      ()=>_gc['pdfmodal'].open(true, 'menu', 'lunch') 
+                    }>Edit</h1>
+                </>
+              } 
+            />
+            <ListItem title="A la carte" 
+              buttons={
+                <>
+                  { /pdf/.test(_gc.menu.food.pdf) &&
+                    <a href={ _gc.menu.food.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
+                  }
+                  { /html/.test(_gc.menu.food.seo) &&
+                    <a href={ _gc.menu.food.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
+                  }
+                  <h1 className="Text-Button" 
+                  onClick={ 
+                    ()=>_gc['pdfmodal'].open(true, 'menu', 'food') 
+                  }>Edit</h1>
+                </>
+              } 
+            />
+            <ListItem title="Drinks" 
+              buttons={
+                <>
+                  { /pdf/.test(_gc.menu.drinks.pdf) &&
+                    <a href={ _gc.menu.drinks.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
+                  }
+                  { /html/.test(_gc.menu.drinks.seo) &&
+                    <a href={ _gc.menu.drinks.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
+                  }
+                  <h1 className="Text-Button" 
+                  onClick={ 
+                    ()=>_gc['pdfmodal'].open(true, 'menu', 'drinks') 
+                  }>Edit</h1>
+                </>
+              } 
+            />
+          </List>
+          <List title="Opening hours">
+            <ListItem title="Monday" 
+              content={
+                <h2 contentEditable="true">11-20</h2>
+              } 
+            />
+            <ListItem title="Tuesday" 
+              content={
+                <h2 contentEditable="true">11-20</h2>
+              } 
+            />
+            <ListItem title="Wednesday" 
+              content={
+                <h2 contentEditable="true">11-20</h2>
+              } 
+            />
+            <ListItem title="Thursday" 
+              content={
+                <h2 contentEditable="true">11-20</h2>
+              } 
+            />
+          </List>
+        </div> 
+      }
       <HousingModal handle="pdfmodal" preflight={ prepMenuData }>
         <PdfProc/>
       </HousingModal>
@@ -110,11 +144,21 @@ const prepMenuData = data => {
       `<img src="${ img.name }${ img.ext }" alt="${ img.alt }" />`
     );
   }).join('');
-  pageFlight.page = `${ _gc.seo.page.head }<main>${ data.seo }</main><div>${ images }</div>${ _gc.seo.page.foot }`;
+  pageFlight.page = `${ _gc.seo.page.head }${ _gc.seo.page.css }${ _gc.seo.page.body }<main>${ data.seo }</main><div class="pages">${ images }</div>${ _gc.seo.page.foot }`;
   
+  let filesToDelete = data.snap.images.map(img=>img.path);
+  data.snap.pdf && filesToDelete.push(data.snap.pdf);
+  data.snap.seo && filesToDelete.push(data.snap.seo);
+
   let fileFlight = {
-    file: data.images[0].url,
-    path: `/${ data.dir }/${ data.images[0].name }${ data.images[0].ext }`
+    dir: 'root',
+    delete: filesToDelete,
+    upload: data.images.map(img => {
+      return {
+        file: img.url,
+        path: `/${ data.dir }/${ img.name }${ img.ext }`
+      }
+    })
   }
 
   let formDataFlight = {
@@ -130,13 +174,20 @@ const prepMenuData = data => {
   Promise.all(promises).then(() => {
     let images = data.images.map(img => {
       return({
-        url: `/menu/${ img.name }${ img.ext }`,
+        url: `${ _gc.options.publicUrl }data/${ data.dir }/${ img.name }${ img.ext }`,
+        path: `/${ data.dir }/${ img.name }${ img.ext }`,
         alt: img.alt
       });
     });
     data.images = images;
-    data.pdf = ``;
-    // writeData(_gc.menu);
-    // console.log(_gc.menu);
+    data.pdf = `${ _gc.options.publicUrl }data/${ formDataFlight.path }`;
+    data.seo = `${ _gc.options.publicUrl }data/${ data.dir }/${ pageFlight.filename }${ pageFlight.ext }`;
+
+    // TODO dynamic menues
+    _gc.menu.lunch.snap = null;
+    _gc.menu.food.snap = null;
+    _gc.menu.drinks.snap = null;
+
+    writeData(_gc.menu);
   });
 }

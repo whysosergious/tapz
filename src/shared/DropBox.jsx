@@ -91,7 +91,7 @@ const DropBox = ({ changed }) => {
         {fileInput}
         <div className={ `Drop-Box-Message` }>
           {/* <img src={imageIcon} alt="File icon" /> */}
-          <h2 className={ `small` }>Upload file</h2>
+          <h2 className={ `small` }>Drag or click here to upload file</h2>
         </div>
       </div>
     </>

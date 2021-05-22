@@ -8,11 +8,11 @@ import { useState } from 'react';
 export const routerHook = {};
 
 export const useRouterHook = () => {
-  const [state, setState] = useState(null);
+  const [ state, setState ] = useState(null);
 
   // state && history.push(`http://localhost:3000/${ state }`, { some: 'state' });
   routerHook.uri = state;
   routerHook.routeTo = setState;
 
-  return [state, setState];
+  return [ state, setState ];
 };

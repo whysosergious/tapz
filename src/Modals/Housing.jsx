@@ -23,6 +23,10 @@ const HousingModal = ({ text='', altClass, preflight, children, handle }) => {
     if ( bool ) {
       _gc[handle].target = _gc[obj][target];
       _gc[handle].target.snap = JSON.parse(JSON.stringify(_gc[handle].target));
+      _gc[handle].path = {
+        obj: obj,
+        target: target
+      }
     }
     setOpen(bool);
   }
@@ -33,7 +37,8 @@ const HousingModal = ({ text='', altClass, preflight, children, handle }) => {
   }
 
   const handleDecline = () => {
-    _gc[handle].target = _gc[handle].target.snap;
+    _gc[_gc[handle].path.obj][_gc[handle].path.target] = _gc[handle].target.snap;
+    _gc[handle].target = null;
     handleOpen(false);
   }
 

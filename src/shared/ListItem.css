@@ -6,8 +6,6 @@
 }
 
 .List-Item-Component :first-child {
-  font-size: 1.2rem;
-  color: rgb(71, 67, 67);
   margin-right: auto;
 }
 

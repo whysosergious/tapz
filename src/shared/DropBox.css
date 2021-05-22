@@ -13,16 +13,17 @@
   background-color: rgb(140, 255, 240);
   cursor: pointer;
   user-select: none;
+  transition: height .2s ease .1s;
+  will-change: height;
 }
-.Drop-Box:hover {
-  background-color: transparent;
-}
+.Drop-Box:hover,
 .Drop-Box.highlight {
   border: .17rem dashed rgb(139, 211, 219);
-  background-color: rgb(144, 247, 212);
+  background-color: transparent;
 }
 .Drop-Box.expand {
-  background-color: white;
+  height: 8rem;
+  transition-delay: 0s;
 }
 .Drop-Box input[type=file] {
   visibility: hidden;
@@ -38,9 +39,8 @@
 }
 .Drop-Box h2 {
   font-size: .75rem;
-  max-width: 8.2rem;
   font-weight: 600;
-  color: #9e9d8a;
+  color: #a7a6a1;
   text-transform: none;
 }
 

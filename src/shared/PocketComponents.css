@@ -93,4 +93,49 @@
   opacity: .7;
   pointer-events: none;
 }
-  
+
+
+
+/* Loading Spinner */
+.Spinner-Overlay {
+  display: flex;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: #00000030;
+  z-index: 24;
+  opacity: 0;
+  transition: opacity .1s ease;
+}
+.Spinner-Overlay.fade {
+  opacity: 1;
+}
+
+.Spinner-Container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4rem;
+  width: 4rem;
+  border-radius: 1rem;
+  background-color: #ffffff;
+  box-shadow: .4rem .6rem 1.4rem -.7rem rgba(0, 0, 0, 0.26);
+}
+
+.Spinner {
+  height: 2rem;
+  width: 2rem;
+  animation-name: spinner;
+  animation-duration: .5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes spinner {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(359deg);}
+}

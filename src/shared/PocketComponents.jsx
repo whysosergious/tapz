@@ -1,5 +1,10 @@
+import { _gc } from 'logic/gc';
 import React, { useState, useRef, useEffect } from 'react';
 import './PocketComponents.css';
+
+
+// icons
+import SpinnerIcon from 'ass/vector/files/spinner.svg';
 
 
 
@@ -225,5 +230,43 @@ export const DatePicker = ({ callback, now=true }) => {
         </div>
       </div>
     </div>
+  );
+}
+
+
+/**
+ * Loading spinner
+ */
+export const Spinner = () => {
+  const [ state, setState ] = useState(false);
+  const [ fade, setFade ] = useState(false);
+
+  const display = bool => {
+    bool && setState(bool);
+    bool && setTimeout(()=>{
+      setFade(bool);
+    }, 10);
+    bool || setFade(bool);
+    bool || setTimeout(()=>{
+      setState(bool);
+    }, 100);
+  }
+
+  useEffect(()=>{
+    _gc.spinner = {
+      display: display
+    }
+  }, []);
+  
+  return(
+    <>
+      { state && 
+        <div className={ `Spinner-Overlay ${ fade ? 'fade' : '' }` }>
+          <div className="Spinner-Container">
+            <img className="Spinner" src={ SpinnerIcon } alt="Spinner Icon" />
+          </div>
+        </div> 
+      }
+    </>
   );
 }

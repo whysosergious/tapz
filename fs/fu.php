@@ -1,57 +1,39 @@
 <?php
 
   if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-
-    // $response = [];
     
     // recieve json
     // TODO adapt for separate files ( pages, lazy loaded content, etc )
     $post_data = json_decode(file_get_contents('php://input'));
     
-    // dir
-    // $dir = $post_data->{'dir'};
-    // $data_folder = $dir === 'root' ? "../data/" : "../data/{$dir}/";
+    $dir = $post_data->{'dir'};
+    $data_folder = $dir === 'root' ? "../data/" : "../data/{$dir}/";
+    !is_dir($data_folder) && mkdir($data_folder, 0777);
 
+    $files_to_delete = $post_data->{'delete'};
+    $files_to_upload = $post_data->{'upload'};
 
-    $file = base64_decode(explode(',', $post_data->{'file'})[1]);
-    file_put_contents('../data/' . $post_data->{'path'}, $file);
-
-
-    function deleteFiles($data, $album) {
-      $file_name = $data->{'file_name'};
-      $file_ext = $data->{'file_ext'};
-      $full_file_name = $file_name . $file_ext;
-
-      unlink("{$GLOBALS['app_root']}{$GLOBALS['gallery_dir']}{$album}/{$full_file_name}");
-    }
-
-    function uploadImages($data, $album) {
-			$file = explode( ',', $data->{'url'} );
-			$file_name = $data->{'file_name'};
-			$file_ext = $data->{'file_ext'};
-			$full_file_name = $file_name . $file_ext;
-
-			$data->{'url'} = "{$GLOBALS['gallery_dir']}{$album}/{$full_file_name}";
-			!is_dir("{$GLOBALS['app_root']}{$GLOBALS['gallery_dir']}{$album}") && mkdir("{$GLOBALS['app_root']}{$GLOBALS['gallery_dir']}{$album}", 0777);
-			$decoded = base64_decode($file[1]);
-			file_put_contents("{$GLOBALS['app_root']}{$GLOBALS['gallery_dir']}{$album}/{$full_file_name}", $decoded);
-		}
-
-
-    function staticEntryLoop($data_array, $pa='nomad') {
-      
-      
-      function loop($data, $pa='nomad') {
-        $album = $data[0]->{'album'} ?? $pa;
-        foreach ($data as $entry) {
-          deleteFiles($entry, $album);
-          isset($entry->{'album'}) && loop($entry->{'sizes'}, $album);
-
+    function deleteEntryLoop($files) {
+      function delete($files) {
+        foreach ($files as $file) {
+          unlink("{$GLOBALS['data_folder']}{$file}");
         }
       }
-      loop($data_array);
+      delete($files);
+    }
+
+    function uploadBase64EntryLoop($data) {
+      function upload($data) {
+        foreach ($data as $file_data) {
+          $file = base64_decode(explode( ',', $file_data->{'file'} )[1]);
+          $path = $GLOBALS['data_folder'] . $file_data->{'path'};
+          file_put_contents($path, $file);
+        }
+      }
+      upload($data);
     }
     
-    // staticEntryLoop($post_data->{'delete'});
+    deleteEntryLoop($files_to_delete);
+    uploadBase64EntryLoop($files_to_upload);
   }
 ?>

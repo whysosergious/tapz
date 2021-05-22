@@ -29,6 +29,10 @@
   display: none;
 }
 
+.Column-Title {
+  font-size: 1.2rem;
+}
+
 
 .Entry-Slot {
   display: flex;

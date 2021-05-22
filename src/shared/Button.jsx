@@ -4,7 +4,7 @@
 import React from "react";
 import "./Button.css";
 
-const Button = ({ text='', action, clicked, altClass, id, storeId, column, slot, hero, root=false }) => {
+const Button = ({ text='', action, clicked, altClass, id, storeId, column, slot, hero, root=false, type=null }) => {
   return (
     <button className={ altClass } onClick={ (ev)=>clicked(ev, action) }
       data-id={id}
@@ -13,6 +13,7 @@ const Button = ({ text='', action, clicked, altClass, id, storeId, column, slot,
       data-slot={slot}
       data-hero={hero}
       data-root={ root }
+      type={ type }
       >
       <h4>{text}</h4>
     </button>
