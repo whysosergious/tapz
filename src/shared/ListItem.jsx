@@ -1,25 +1,13 @@
 /**
  * List component
  */
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./ListItem.css";
 
-// components
-
+// logic
+// import { _gc } from 'logic/gc';
 
 const ListItem = ({ title, buttons, content }) => {
-
-  // const handleClose = () => {
-
-  // }
-
-  // const handleOk = () => {
-  //   accept(date, who)
-  // }
-
-  // const handleDecline = () => {
-  //   decline();
-  // }
 
   return (
     <div className="List-Item-Component">

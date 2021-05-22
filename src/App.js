@@ -32,8 +32,6 @@ function App() {
         let user = _zcm.users.find(user => {
           return user.tokens.includes(sessionToken);
         });
-        
-        console.log('Session token expired');
 
         if ( !user )
           return removeSessionToken();
@@ -48,8 +46,6 @@ function App() {
 
   if (!sessionToken)
     return <LoginPage setSessionToken={ setSessionToken } />
-
-
 
   return (
     <section className="App">

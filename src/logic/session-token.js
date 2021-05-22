@@ -4,7 +4,6 @@
 import { useState } from 'react';
 
 export const useSessionToken = () => {
-
   const getSessionToken = () => {
     const sessionToken = localStorage.getItem('sessiontoken');
     const userToken = JSON.parse(sessionToken);
@@ -23,5 +22,5 @@ export const useSessionToken = () => {
 
   const [ sessionToken, setTokenState ] = useState(getSessionToken());
 
-  return { sessionToken, getSessionToken, setSessionToken, removeSessionToken };
+  return { sessionToken, setSessionToken, removeSessionToken };
 }

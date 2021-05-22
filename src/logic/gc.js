@@ -125,14 +125,6 @@ export var _zcm = {
   users: []
 }
 
-export var _session = {
-  user: {
-    id: 0,
-    username: 'zergski',
-    name: 'Sergio',
-  }
-}
-
 const cmsroot = 'http://localhost/tapz/';
 const dataFolder = 'data';
 export const writeData = async (data) => {

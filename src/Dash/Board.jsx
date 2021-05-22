@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import "./Board.css";
 
-import { _gc, _zcm, fetchData, writeData, uploadFormData, uploadFiles } from 'logic/gc';
+import { _gc, fetchData, writeData, uploadFormData, uploadFiles } from 'logic/gc';
  
 // components
 import List from 'shared/List';
@@ -47,7 +47,7 @@ const DashBoard = () => {
           }}
         >
         <List title="Menus" >
-            <ListItem title="Lunch" 
+            <ListItem title="Lunch" handle="lunch"
               buttons={
                 <>
                   { /pdf/.test(_gc.menu.lunch.pdf) &&
@@ -63,7 +63,7 @@ const DashBoard = () => {
                 </>
               } 
             />
-            <ListItem title="A la carte" 
+            <ListItem title="A la carte" handle="food"
               buttons={
                 <>
                   { /pdf/.test(_gc.menu.food.pdf) &&
@@ -79,7 +79,7 @@ const DashBoard = () => {
                 </>
               } 
             />
-            <ListItem title="Drinks" 
+            <ListItem title="Drinks" handle="drinks"
               buttons={
                 <>
                   { /pdf/.test(_gc.menu.drinks.pdf) &&
@@ -188,6 +188,8 @@ const prepMenuData = data => {
     _gc.menu.food.snap = null;
     _gc.menu.drinks.snap = null;
 
-    writeData(_gc.menu);
+    writeData(_gc.menu).then(()=>{
+      _gc.dashBoard.dispatch();
+    });
   });
 }
