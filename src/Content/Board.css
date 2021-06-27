@@ -1,0 +1,93 @@
+.Board.Content .Column-Heading-Group {
+  margin-bottom: 0;
+}
+
+.Board.Content .Column-Heading-Group {
+  margin-bottom: 0;
+}
+
+.Board.Content .List-Container {
+  padding-top: 0;
+  padding-right: .05rem;
+}
+
+.SubGroup {
+  background-color: rgb(192, 248, 217);
+}
+
+.ColumnGroup {
+  align-items: center;
+  height: 1.5rem;
+  background-color: rgb(215, 252, 232);
+}
+
+.ColumnGroup h2:not(:first-child) {
+  padding-left: .4rem;
+}
+
+.SubGroup {
+  font-size: .8rem;
+  padding: .3rem;
+  padding-left: .7rem;
+}
+
+.Content-Row {
+  min-height: 2.4rem;
+}
+
+.Content-Row:nth-child(odd) {
+  background-color: #f6faf8;
+}
+
+.Content-Row h2 {
+  white-space: pre-wrap;
+  padding: .7rem .4rem;
+}
+
+.Content-Row h2:first-child {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.Content-Row, .ColumnGroup {
+  display: grid;
+  grid-template-columns: 10rem 3fr 3fr;
+}
+
+.ContentKey, .ColumnDesc.key {
+  font-size: .8rem;
+  text-align: center;
+  /* align-self: center; */
+}
+
+.ColumnDesc {
+  font-size: .8rem;
+  opacity: .8;
+}
+
+
+.Tools {
+  display: flex;
+  position: fixed;
+  top: 4rem;
+  right: 3rem;
+}
+
+.Tool {
+  height: 2.2rem;
+  width: 2.2rem;
+  padding: .3rem;
+  margin: 0 .24rem;
+  background-color: rgb(245, 239, 239);
+  border-radius: .2rem;
+  box-shadow: .1rem .1rem .4rem -.1rem rgba(0, 0, 0, 0.233);
+  cursor: pointer;
+}
+
+.Tool.disabled {
+  pointer-events: none;
+}
+
+.Tool.disabled img {
+  opacity: .4;
+}

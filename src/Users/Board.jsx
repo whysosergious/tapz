@@ -36,7 +36,7 @@ const UsersBoard = () => {
     users = [];
     _zcm.users.forEach(user => {
       users.push(
-        <ListItem key={ `user${ user.username }${ user.id }` } title={ user.username } 
+        <ListItem key={ `user${ user.username }${ user.id }` } title={ user.username } altClass="align-l"
           buttons={
             <>
               <div style={{ display: 'flex', flexBasis: '70%', justifyContent: 'space-evenly', alignItems: '', marginLeft: '1rem' }}>

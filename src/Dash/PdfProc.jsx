@@ -23,9 +23,9 @@ const PdfProc = ({ handle }) => {
     seoText = [];
   }
 
-  const generatePreviews = (img) => {
+  const generatePreviews = (img, i) => {
     pages.push(
-      <div key={ img.title } className="Preview">
+      <div key={ `${ img.title }${ i }` } className="Preview">
         <img src={ img.url } alt={ img.alt } />
       </div>
     );
@@ -40,7 +40,8 @@ const PdfProc = ({ handle }) => {
       dispatch: renderComponent,
     }
     if ( pages.length !== target.images.length ) {
-      target.images.forEach(img => generatePreviews(img));
+      let i = 0;
+      target.images.forEach(img => generatePreviews(img, i++));
       renderComponent();
     }
     return ()=>reset();
@@ -90,7 +91,7 @@ const PdfProc = ({ handle }) => {
                   alt: `${ _gc.options.imgaltprefix }${ target.title } Page-${ i }` 
                 }
               target.images.push(img);
-              generatePreviews(img);
+              generatePreviews(img, i);
             })
           );
 

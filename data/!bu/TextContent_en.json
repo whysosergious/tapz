@@ -1,0 +1,129 @@
+{
+  "landing": {
+    "heading_span": "ENG___spanriegnoiegpoe",
+    "heading": "ENG___Oliver Twist",
+    "subheading": "ENG___Stockholm",
+    "button_hours": "ENG___Våra öppettider"
+  },
+  "promo": {
+    "heading_span": "ENG___ENG___En av de bästa111",
+    "heading": "ENG___ENG___I världen",
+    "body": "ENG___ENG___bodytextsadadssad"
+  },
+  "doormat": {
+    "heading": "ENG___ENG___Ett sortta över",
+    "body": "ENG___ENG___På fat har vi 23 olika öl som roterar med sorter från världens bästa bryggerier. Bland våra 180+ olika flasköl, även där med ett alternerande sortiment, hittar du precis det du letar efter. Vi har nåt för alla."
+  },
+  "news": {
+    "heading_span": "ENG___ENG___Senaste",
+    "heading": "ENG___ENG___Nyheter",
+    "body": "ENG___ENG___Evenemang, nysläpp och mycket mer uppdaterat dagligen.",
+    "button_more": "ENG___ENG___Ladda Fler"
+  },
+  "gallery": {
+    "heading": "ENG___ENG___Bildgalleri"
+  },
+  "menu": {
+    "heading": "ENG___ENG___Våran Meny",
+    "body": "ENG___ENG___Till ölen, och våra väl utvalda viner, hittar du en meny vi serverar med stolthet. All mat är gjord från grunden av bästa möjliga råvaror tillagad med kärlek.",
+    "items": [
+      {
+        "name": "ENG___ENG___Lunch",
+        "file": "ENG___"
+      },
+      {
+        "name": "ENG___ENG___A la carte",
+        "file": "ENG___"
+      },
+      {
+        "name": "ENG___ENG___Öl & Dryck",
+        "file": "ENG___"
+      }
+    ]
+  },
+  "about": {
+    "intro": {
+      "heading": "ENG___ENG___ENGIt's not complicated",
+      "body": "ENG___ENG___Tänk dig en pub som kanske inte bara är en pub. Samma känsla av att känna sig välkommen, samma inbjudande atmosfär, men med en känsla av att du klivit in i nåt unikt, nånting annorlunda och speciellt.<p>När vi öppnade 1993 var Sverige en öken. Av de få öl som fanns var nästan alla öl ljus tråkig lager, och det fanns inte många! Vi tyckte det var direkt fel, och det var tid för förändring. Som du märker har det hänt en del.</p>"
+    },
+    "import": {
+      "heading": "ENG___Samarbete & Import",
+      "body": "ENG___Sedan 2008 har vi med stor hjälp av vårt egna importföretag sett till att ha Nordens, om inte Europas starkaste utbud av Amerikansk Craft Beer i våra kylar. Så titta förbi och upptäck varför."
+    },
+    "local": {
+      "heading": "ENG___Support your local brewers",
+      "body": "ENG___Vi samarbetar nära med Sveriges skickligaste bryggare. Och man hittar allt från nyheter till gamla godingar på både fat och flaska. Många gånger får vi också besök av våra lokala stjärnor."
+    },
+    "service": {
+      "heading": "ENG___Service i fokus",
+      "body": "ENG___Praesent tristique dui fringilla, blandit nibh eget, tempus tortor. Nam a porta enim. Donec venenatis ligula tortor, eu dictum arcu bibendum id. In sed odio ac turpis sodales facilisis."
+    },
+    "cask": {
+      "heading": "ENG___Vi strävar efter kvalitet",
+      "body": "ENG___Vår hantering av Real Ale gjorde att vi 2001 fick den brittiska utmärkelsen Cask Marque som första pub utanför de brittiska öarna, en utmärkelse vi fått varje år sedan dess."
+    }
+  },
+  "contact": {
+    "heading": "ENG___Kontakta oss",
+    "body": "ENG___Har du frågor? Hesitera inte att höra av dig via telefon eller mejl! Boka bord gör du enkelt online för begränsad antal i sällskapet. För större sällskap ring eller mejla så ordnar vi det!<p>OBS! På grund av rådande begränsningar under pandemin kan vi inte ta emot sällskap med fler än fyra personer.</p>",
+    "button_book": "ENG___Boka bord online"
+  },
+  "hours": {
+    "heading": "ENG___Våra Öppettider",
+    "button_regular": "ENG___Regulära",
+    "button_exceptions": "ENG___Avvikande",
+    "regular": [
+      {
+        "day": "ENG___Måndag",
+        "time": "ENG___13 - 20"
+      },
+      {
+        "day": "ENG___Tisdag",
+        "time": "ENG___13 - 20"
+      },
+      {
+        "day": "ENG___Onsdag",
+        "time": "ENG___13 - 20"
+      },
+      {
+        "day": "ENG___Torsdag",
+        "time": "ENG___13 - 20"
+      },
+      {
+        "day": "ENG___Fredag",
+        "time": "ENG___13 - 20"
+      },
+      {
+        "day": "ENG___Lördag",
+        "time": "ENG___13 - 20"
+      },
+      {
+        "day": "ENG___Söndag",
+        "time": "ENG___13 - 20"
+      }
+    ],
+    "exceptions": [
+      {
+        "type": "ENG___day",
+        "day": "ENG___Påskafton 14/4",
+        "time": "ENG___Stängt"
+      },
+      {
+        "type": "ENG___info",
+        "message": "ENG___Pga Covid-19 Stänger vi kl 20 alla dagar, för att regeringen är fullständing dumma i huvudet!"
+      }
+    ]
+  },
+  "shared": {
+    "buttons": {
+      "more": "ENG___Läs Mer",
+      "news": "ENG___Nyheter",
+      "gallery": "ENG___Galleri",
+      "menu": "ENG___Meny",
+      "about": "ENG___Om oss",
+      "contact": "ENG___Kontakt",
+      "book": "ENG___Boka Bord",
+      "lang": "ENG___Eng."
+    }
+  }
+}

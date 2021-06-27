@@ -15,7 +15,7 @@
       
       $write = $array ? 'all' : json_decode($data)->{'write'};
       if ( $write !== 'all' ) {
-        $data = json_decode($data)->{$write};
+        $data = json_encode(json_decode($data)->{$write});
       }
 
 			$filename = $folder . $file;

@@ -193,12 +193,10 @@ export const fetchData = async (fileName, folder=dataFolder, { fileExt='.json', 
     })
     .then(data => {
       setData(data.filename, data);
-      
-      if ( /(?<!History)(TextContent)/g.test(fileName) ) {
-        // _gc.textContent = myJson;
-        // backup && (_gc.textBackup = JSON.parse(JSON.stringify(_gc.textContent)));
-      } else {
-        // result = myJson;
+      result = data;
+      if ( /(?<!History)(TextContent)|(OpenHours)/g.test(fileName) ) {
+        _gc[fileName] = data;
+        backup && (_gc[`${ fileName }Backup`] = JSON.stringify(_gc[fileName]));
       }
     }).catch(err => { console.log(err) });
   return result;

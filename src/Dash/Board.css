@@ -1,6 +1,7 @@
 .Board-Grid {
   display: grid;
-  gap: 3rem;
+  position: relative;
+  gap: 2rem;
 }
 
 
@@ -8,4 +9,27 @@
   --left-col-width: auto;
   --right-col-width: auto;
   grid-template-columns: var(--left-col-width) var(--right-col-width);
+}
+
+.Text-Editable,
+strong.Text-Editable,
+.Hours-Editable {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  white-space: pre-wrap;
+  /* max-width: 25rem; */
+  flex-wrap: wrap;
+  flex-direction: column;
+  padding: .5rem .5rem;
+}
+
+.Text-Editable {
+  flex-basis: 100%;
+}
+
+.Hours-Editable {
+  width: 5.5rem;
 }

@@ -13,14 +13,91 @@ import PdfProc from './PdfProc';
 import HousingModal from 'Modals/Housing';
 //  import Column from "./Column";
 
+// media
+import SaveIcon from 'ass/vector/files/save.svg';
+import UndoIcon from 'ass/vector/files/undo.svg';
 
-
+let ordinal = 0;
 const DashBoard = () => {
   const [ , setState ] = useState(null);
-  const [ loadState, setLoadState ] = useState(false);
+  const [ openHours, setOpenHours ] = useState([]);
+  const [ modified, setModified ] = useState(false);
 
   const renderComponent = ( s=Date.now() ) => {
     setState(s);
+  }
+
+  const handleEditable = ({ target }) => {
+    const findHero = () => {
+      if ( !/h[\d]*/i.test(target.tagName) ) {
+        target = target.parentElement;
+        findHero();
+      } else {
+        target.setAttribute('contenteditable', true);    
+      }
+    }
+    findHero();
+  }
+  
+  const handleInput = (event, id, list, path) => {
+    let { target } = event,
+      data = _gc[`OpenHours`][list];
+
+    path = path.split('.');
+    for ( let i=0; i<data.length; i++ ) {
+      if ( data[i].id === id ) {
+        let key, d;
+        if ( path.length > 1 ) {
+          d = data[i][path[0]];
+          key = path[1];
+        } else {
+          d = data[i];
+          key = path;
+        }
+
+        d[key] = target.innerText;
+        console.log(target.innerText);
+        setModified(true);
+        return;
+      }
+    }
+  }
+
+  const parseData = data => {
+    let regular = [],
+      exceptions = [];
+
+    data.regular.forEach(({ id, name, closed, hours }) => {
+      regular.push(
+        <ListItem key={ `${ name }${ id }${ ordinal++ }` } title={ name } altClass="align-l">
+          <h2 className="Hours-Editable" onMouseDown={ handleEditable } onInput={ event=>handleInput(event, id, 'regular', 'hours') }>
+          { closed ? 'Closed' : hours }
+          </h2>
+        </ListItem>
+      );
+    });
+
+    regular = <List key="HoursRegular" altClass="regular" title="Regular Hours">
+      { regular }
+    </List>
+
+    data.exceptions.forEach(({ id, type, text, closed, hours }) => {
+      exceptions.push(
+        <ListItem key={ `${ type }${ id }${ ordinal++ }` } altClass={ `${ type } ${ type === 'info' ? '' : 'align-l' }` } title={ text.en } editable={ true } mousedown={ handleEditable } input={ event=>handleInput(event, id, 'exceptions', 'text.en') }>
+          { type !== 'info' && 
+              <h2 className="Hours-Editable" onMouseDown={ handleEditable } onInput={ event=>handleInput(event, id, 'exceptions', 'hours') }>
+              { closed ? 'Closed' : hours }
+            </h2>
+          }
+        </ListItem>
+      );
+    });
+
+    exceptions = <List key="HoursExceptions" altClass="pc-2" title="Exceptions & Info">
+      { exceptions }
+    </List>
+
+    setOpenHours([regular, exceptions]);
   }
 
   useEffect(() => {
@@ -29,17 +106,41 @@ const DashBoard = () => {
     }
 
     let promises = [];
+    promises.push(fetchData('OpenHours'));
     promises.push(fetchData('Menu'));
-    Promise.all(promises).then(() => {
-      setLoadState(true);
+    Promise.all(promises).then(data => {
+      parseData(data[0]);
     });
   }, []);
  
+  const handleSave = () => {
+    let hoursFlight = {
+      filename: 'OpenHours',
+      ext: '.json',
+      history: false,
+      dir: 'root',
+      write: 'data',
+      data: _gc.OpenHours
+    }
+
+    writeData(hoursFlight).then(() => {
+      console.log('saved data');
+      _gc.OpenHoursBackup = JSON.stringify(_gc.OpenHours);
+      setModified(false);
+    });
+  }
+
+  const handleUndo = () => {
+    _gc.OpenHours = JSON.parse(_gc.OpenHoursBackup);
+    parseData(_gc.OpenHours);
+    setModified(false);
+  }
+
   return (
     <section className="Board">
       <h1 className="Board-Heading">Dashboard</h1>
 
-      { loadState && 
+      {/* { loadState &&  */}
         <div className="Board-Grid Col-2"
           style={{ 
             '--left-col-width': '2fr',
@@ -47,7 +148,7 @@ const DashBoard = () => {
           }}
         >
         <List title="Menus" >
-            <ListItem title="Lunch" handle="lunch"
+            <ListItem title="Lunch" handle="lunch" altClass="align-l"
               buttons={
                 <>
                   { /pdf/.test(_gc.menu.lunch.pdf) &&
@@ -63,7 +164,7 @@ const DashBoard = () => {
                 </>
               } 
             />
-            <ListItem title="A la carte" handle="food"
+            <ListItem title="A la carte" handle="food" altClass="align-l"
               buttons={
                 <>
                   { /pdf/.test(_gc.menu.food.pdf) &&
@@ -79,7 +180,7 @@ const DashBoard = () => {
                 </>
               } 
             />
-            <ListItem title="Drinks" handle="drinks"
+            <ListItem title="Drinks" handle="drinks" altClass="align-l"
               buttons={
                 <>
                   { /pdf/.test(_gc.menu.drinks.pdf) &&
@@ -96,30 +197,17 @@ const DashBoard = () => {
               } 
             />
           </List>
-          <List title="Opening hours">
-            <ListItem title="Monday" 
-              content={
-                <h2 contentEditable="true">11-20</h2>
-              } 
-            />
-            <ListItem title="Tuesday" 
-              content={
-                <h2 contentEditable="true">11-20</h2>
-              } 
-            />
-            <ListItem title="Wednesday" 
-              content={
-                <h2 contentEditable="true">11-20</h2>
-              } 
-            />
-            <ListItem title="Thursday" 
-              content={
-                <h2 contentEditable="true">11-20</h2>
-              } 
-            />
-          </List>
+          <div className="Tools">
+          <div className={ `Tool ${ modified ? '' : 'disabled' }` } onClick={ handleUndo }>
+            <img src={ UndoIcon } alt="Undo Icon" />
+          </div>
+          <div className="Tool" onClick={ handleSave }>
+            <img src={ SaveIcon } alt="Save Icon" />
+          </div>
+        </div>
+          { openHours }
         </div> 
-      }
+      {/* } */}
       <HousingModal handle="pdfmodal" preflight={ prepMenuData }>
         <PdfProc/>
       </HousingModal>

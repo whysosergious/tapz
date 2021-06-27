@@ -56,3 +56,9 @@ input:focus {
   color: red;
   margin-top: .4rem;
 }
+
+
+/* interactions */
+[contenteditable=true]:focus {
+  outline: .1rem solid rgba(0, 0, 0, 0.233);
+}

@@ -1,14 +1,27 @@
 .List-Item-Component {
   display: flex;
   align-items: center;
-  height: 2.4rem;
-  padding: 0 .6rem;
+  min-height: 2.4rem;
+  padding: .1rem;
 }
 
-.List-Item-Component :first-child {
+.List-Item-Component .align-l {
   margin-right: auto;
+  align-items: flex-start;
 }
 
 .List-Item-Component:nth-child(odd) {
   background-color: rgba(55, 139, 107, 0.048);
+}
+
+.List-Item-Component.info {
+  margin-right: 0;
+
+  justify-content: center;
+  text-align: center;
+}
+
+.List-Item-Component.info h2 {
+  font-size: .8rem;
+  margin-right: unset;
 }

@@ -20,6 +20,7 @@ const handleDescChange = (event, column) => {
   formDesc = titleInput.value;
   column && _gc.CardForm.dispatch();
 };
+
 const handleBreweryChange = (event, column) => {
   descInput = event.currentTarget;
   formBrewery = descInput.value;
@@ -231,7 +232,7 @@ const CardForm = ({ storeId=null, desc=null, brewery=null, color, column, close 
               <Button altClass={ activeList === 'store' ? `Tab active` : 'Tab' } text="Beer Bank" clicked={ ()=>displayList('store') } />
               <Button altClass={ activeList === 'selected' ? `Tab active` : 'Tab' } text="Selected Items" clicked={ ()=>displayList('selected') } />
             </div>
-            <div class="List-Container">
+            <div className="List-Container">
               { listResults() }
             </div>
           </div> 

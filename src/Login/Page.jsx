@@ -104,7 +104,7 @@ const LoginPage = ({ setSessionToken }) => {
         </button>
         { error && <h2 className="Message">Sign in failed. Wrong credentials</h2> }
       </form>
-      <a href="#doris" className="Login"><h2>Forgot password?</h2></a>
+      <a href="#doris" className="Login"><h2>Forgot your password?</h2></a>
       
     </section>
   );
