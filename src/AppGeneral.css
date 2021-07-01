@@ -8,6 +8,10 @@
   user-select: none;
 }
 
+.Text-Button.heading {
+  padding: .3rem .5rem .2rem .5rem;
+}
+
 a {
   text-decoration: none;
 }

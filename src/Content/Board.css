@@ -71,6 +71,7 @@
   position: fixed;
   top: 4rem;
   right: 3rem;
+  user-select: none;
 }
 
 .Tool {

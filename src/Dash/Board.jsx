@@ -17,7 +17,8 @@ import HousingModal from 'Modals/Housing';
 import SaveIcon from 'ass/vector/files/save.svg';
 import UndoIcon from 'ass/vector/files/undo.svg';
 
-let ordinal = 0;
+let ordinal = 0,
+  lang = 'sv';
 const DashBoard = () => {
   const [ , setState ] = useState(null);
   const [ openHours, setOpenHours ] = useState([]);
@@ -42,7 +43,7 @@ const DashBoard = () => {
   const handleInput = (event, id, list, path) => {
     let { target } = event,
       data = _gc[`OpenHours`][list];
-
+console.log(path)
     path = path.split('.');
     for ( let i=0; i<data.length; i++ ) {
       if ( data[i].id === id ) {
@@ -56,9 +57,49 @@ const DashBoard = () => {
         }
 
         d[key] = target.innerText;
-        console.log(target.innerText);
         setModified(true);
         return;
+      }
+    }
+  }
+
+  const handleAddHours = type => {
+    let newEntry;
+    if ( type === 'day' ) {
+      newEntry = {
+        id: _gc.OpenHours.num++,
+        type,
+        closed: false,
+        text: {
+          sv: 'Datum/dag',
+          en: 'Date/day'
+        },
+        hours: '11-01'
+      }
+    }
+    if ( type === 'info' ) {
+      newEntry = {
+        id: _gc.OpenHours.num++,
+        type,
+        text: {
+          sv: 'Meddelande',
+          en: 'Message'
+        }
+      }
+    }
+    _gc.OpenHours.exceptions.push(newEntry);
+    parseData(_gc.OpenHours);
+    setModified(true);
+  }
+
+  const handleDeleteHours = id => {
+    let arr = _gc.OpenHours.exceptions;
+    for ( let i=0; i<arr.length; i++) {
+      if ( arr[i].id === id ) {
+        arr.splice(i,1);
+        parseData(_gc.OpenHours);
+        setModified(true);
+        break;
       }
     }
   }
@@ -83,17 +124,24 @@ const DashBoard = () => {
 
     data.exceptions.forEach(({ id, type, text, closed, hours }) => {
       exceptions.push(
-        <ListItem key={ `${ type }${ id }${ ordinal++ }` } altClass={ `${ type } ${ type === 'info' ? '' : 'align-l' }` } title={ text.en } editable={ true } mousedown={ handleEditable } input={ event=>handleInput(event, id, 'exceptions', 'text.en') }>
+        <ListItem key={ `${ type }${ id }${ ordinal++ }` } altClass={ `${ type } ${ type === 'info' ? '' : 'align-l' }` } title={ text[lang] } editable={ true } mousedown={ handleEditable } input={ event=>handleInput(event, id, 'exceptions', `text.${ lang }` ) }>
           { type !== 'info' && 
               <h2 className="Hours-Editable" onMouseDown={ handleEditable } onInput={ event=>handleInput(event, id, 'exceptions', 'hours') }>
               { closed ? 'Closed' : hours }
             </h2>
           }
+          <h1 className="Text-Button" onClick={ ()=>handleDeleteHours(id) }>Del</h1>
         </ListItem>
       );
     });
 
-    exceptions = <List key="HoursExceptions" altClass="pc-2" title="Exceptions & Info">
+    exceptions = <List key="HoursExceptions" altClass="pc-2" title="Exceptions & Info"
+      buttons={
+        <>
+          <h1 className="Text-Button heading" onClick={ ()=>handleAddHours('day') }>Add day+</h1>
+          <h1 className="Text-Button heading" onClick={ ()=>handleAddHours('info') }>Add info+</h1>
+        </>
+      }>
       { exceptions }
     </List>
 
@@ -136,11 +184,15 @@ const DashBoard = () => {
     setModified(false);
   }
 
+  const handleToggleLanguage = () => {
+    lang = lang === 'sv' ? 'en' : 'sv';
+    parseData(_gc.OpenHours);
+  }
+
   return (
     <section className="Board">
       <h1 className="Board-Heading">Dashboard</h1>
 
-      {/* { loadState &&  */}
         <div className="Board-Grid Col-2"
           style={{ 
             '--left-col-width': '2fr',
@@ -148,56 +200,60 @@ const DashBoard = () => {
           }}
         >
         <List title="Menus" >
-            <ListItem title="Lunch" handle="lunch" altClass="align-l"
-              buttons={
-                <>
-                  { /pdf/.test(_gc.menu.lunch.pdf) &&
-                    <a href={ _gc.menu.lunch.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
-                  }
-                  { /html/.test(_gc.menu.lunch.seo) &&
-                    <a href={ _gc.menu.lunch.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
-                  }
-                  <h1 className="Text-Button" 
-                    onClick={ 
-                      ()=>_gc['pdfmodal'].open(true, 'menu', 'lunch') 
-                    }>Edit</h1>
-                </>
-              } 
-            />
-            <ListItem title="A la carte" handle="food" altClass="align-l"
-              buttons={
-                <>
-                  { /pdf/.test(_gc.menu.food.pdf) &&
-                    <a href={ _gc.menu.food.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
-                  }
-                  { /html/.test(_gc.menu.food.seo) &&
-                    <a href={ _gc.menu.food.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
-                  }
-                  <h1 className="Text-Button" 
+          <ListItem title="Lunch" handle="lunch" altClass="align-l"
+            buttons={
+              <>
+                { /pdf/.test(_gc.menu.lunch.pdf) &&
+                  <a href={ _gc.menu.lunch.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
+                }
+                { /html/.test(_gc.menu.lunch.seo) &&
+                  <a href={ _gc.menu.lunch.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
+                }
+                <h1 className="Text-Button" 
                   onClick={ 
-                    ()=>_gc['pdfmodal'].open(true, 'menu', 'food') 
+                    ()=>_gc['pdfmodal'].open(true, 'menu', 'lunch') 
                   }>Edit</h1>
-                </>
-              } 
-            />
-            <ListItem title="Drinks" handle="drinks" altClass="align-l"
-              buttons={
-                <>
-                  { /pdf/.test(_gc.menu.drinks.pdf) &&
-                    <a href={ _gc.menu.drinks.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
-                  }
-                  { /html/.test(_gc.menu.drinks.seo) &&
-                    <a href={ _gc.menu.drinks.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
-                  }
-                  <h1 className="Text-Button" 
-                  onClick={ 
-                    ()=>_gc['pdfmodal'].open(true, 'menu', 'drinks') 
-                  }>Edit</h1>
-                </>
-              } 
-            />
-          </List>
-          <div className="Tools">
+              </>
+            } 
+          />
+          <ListItem title="A la carte" handle="food" altClass="align-l"
+            buttons={
+              <>
+                { /pdf/.test(_gc.menu.food.pdf) &&
+                  <a href={ _gc.menu.food.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
+                }
+                { /html/.test(_gc.menu.food.seo) &&
+                  <a href={ _gc.menu.food.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
+                }
+                <h1 className="Text-Button" 
+                onClick={ 
+                  ()=>_gc['pdfmodal'].open(true, 'menu', 'food') 
+                }>Edit</h1>
+              </>
+            } 
+          />
+          <ListItem title="Drinks" handle="drinks" altClass="align-l"
+            buttons={
+              <>
+                { /pdf/.test(_gc.menu.drinks.pdf) &&
+                  <a href={ _gc.menu.drinks.pdf } target="_blank" rel="noreferrer"><h1 className="Text-Button">PDF</h1></a>
+                }
+                { /html/.test(_gc.menu.drinks.seo) &&
+                  <a href={ _gc.menu.drinks.seo } target="_blank" rel="noreferrer"><h1 className="Text-Button">Page</h1></a>
+                }
+                <h1 className="Text-Button" 
+                onClick={ 
+                  ()=>_gc['pdfmodal'].open(true, 'menu', 'drinks') 
+                }>Edit</h1>
+              </>
+            } 
+          />
+        </List>
+
+        <div className="Tools">
+          <div className={ `Tool` } onClick={ handleToggleLanguage }>
+            <h2>{ lang === 'sv' ? 'En' : 'Sv' }</h2>
+          </div>
           <div className={ `Tool ${ modified ? '' : 'disabled' }` } onClick={ handleUndo }>
             <img src={ UndoIcon } alt="Undo Icon" />
           </div>
@@ -206,8 +262,8 @@ const DashBoard = () => {
           </div>
         </div>
           { openHours }
-        </div> 
-      {/* } */}
+        </div>
+
       <HousingModal handle="pdfmodal" preflight={ prepMenuData }>
         <PdfProc/>
       </HousingModal>

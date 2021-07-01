@@ -7,7 +7,7 @@ import "./List.css";
 // components
 
 
-const List = ({ altClass='', title, children }) => {
+const List = ({ altClass='', title, buttons, children }) => {
 // console.log(...items.props.children);
   // const handleClose = () => {
 
@@ -25,6 +25,7 @@ const List = ({ altClass='', title, children }) => {
     <div className={ `List-Component ${ altClass }` }>
       <div className="Column-Heading-Group">
         <h1 className="Column-Title">{ title }</h1>
+        { buttons }
       </div>
       <div className={ `List-Container ${ altClass }` }>
         { children }
